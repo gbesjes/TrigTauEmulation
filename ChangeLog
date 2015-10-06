@@ -1,0 +1,32 @@
+2015-09-25 Patrick Czodrowski <czodrows@cern.ch>
+    * Root/Parser.cxx: address CID 31008
+    * tagging TrigTauEmulation-00-00-10
+
+2015-06-26 Quentin Buat <quentin.buat@cern.ch>
+	* Fix the EMTAU isolation/leakage threshold 
+	* Comment out the TauDiscriminant
+	* tagging TrigTauEmulation-00-00-09
+
+2015-05-19 Quentin Buat <quentin.buat@cern.ch>
+	* Fix a bug in the Athena compilation
+	* Implement the HLT emulation
+	* tagging TrigTauEmulation-00-00-07
+
+2015-05-19 Quentin Buat <quentin.buat@cern.ch>
+	* Fix a bug in the L1 emulation counting (affect only the athena usage)
+	* tagging TrigTauEmulation-00-00-06
+
+2015-05-19 Quentin Buat <quentin.buat@cern.ch>
+	* Interfacing with the monitoring tool in Athena
+	* Implement the HLT selection (WIP)
+	* tagging TrigTauEmulation-00-00-05
+
+2015-05-19 Quentin Buat <quentin.buat@cern.ch>
+	* Implement the HLT selection (WIP)
+	* Introduce TrigTauEmul namespace
+	* Fix problem in Athena usage
+	* tagging TrigTauEmulation-00-00-04
+
+2015-05-12 Quentin Buat <quentin.buat@cern.ch>
+	* first import for Run2 tool
+	* tagging TrigTauEmulation-00-00-03

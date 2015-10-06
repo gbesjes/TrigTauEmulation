@@ -1,0 +1,19 @@
+#ifndef TOOLSREGISTRY_ITOOLSREGISTRY_H
+#define TOOLSREGISTRY_ITOOLSREGISTRY_H
+
+#include "AsgTools/IAsgTool.h"
+
+
+class IToolsRegistry : public virtual asg::IAsgTool
+
+{
+  ASG_TOOL_INTERFACE(IToolsRegistry)
+
+ public:
+  
+  virtual ~IToolsRegistry() {};
+
+  virtual StatusCode initialize() = 0;
+
+};
+#endif
