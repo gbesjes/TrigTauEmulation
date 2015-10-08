@@ -1,3 +1,4 @@
+// vim: ts=2 sw=2
 // Interface class of TauTriggerEmulationTool
 
 // author Quentin Buat <quentin.buat@no.spam.cern.ch>
@@ -36,7 +37,8 @@ namespace TrigTauEmul {
 				   const xAOD::EnergySumRoI* l1xe) = 0;
       
       virtual bool decision(const std::string & chain_name) = 0;
-     
+
+      virtual void GetChains() = 0;
       virtual StatusCode removeUnusedTools(const std::set<std::string>& usedTools) = 0;
 
       virtual std::vector<std::string> GetL1Chains() = 0;

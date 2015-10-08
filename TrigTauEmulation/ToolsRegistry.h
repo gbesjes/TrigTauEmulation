@@ -1,3 +1,4 @@
+// vim: ts=2 sw=2
 #ifndef TOOLSREGISTRY_TOOLSREGISTRY_H
 #define TOOLSREGISTRY_TOOLSREGISTRY_H
 
@@ -23,132 +24,150 @@
 
 #include "TrigTauEmulation/FastTrackSelectionTool.h"
 
+#include <type_traits>
+
+//typedef StatusCode (*ToolInitializeFunction)(void); // function pointer type
+
+class ToolsRegistry;
+typedef StatusCode (ToolsRegistry::*ToolInitializeFunction)(); 
+//typedef return_type (*TypeName)(paramType1, paramTypeN); 
+
 class ToolsRegistry : virtual public IToolsRegistry, virtual public asg::AsgTool
 
 {
   ASG_TOOL_CLASS(ToolsRegistry, IToolsRegistry)
-  
- public:
-  
-  ToolsRegistry(const std::string& name);
 
-  ToolsRegistry(const ToolsRegistry& other);
+  //using ToolInitializeFunction = std::add_pointer<StatusCode()>::type;
 
-  virtual ~ToolsRegistry();
-    
-  /// Initialize the tool
-  virtual StatusCode initialize();
+  public:
 
-  ToolHandleArray<IEmTauSelectionTool> GetL1TauTools() {return m_l1tau_tools;}
-  ToolHandleArray<IEnergySumSelectionTool> GetL1XeTools() {return m_l1xe_tools;}
-  ToolHandleArray<IJetRoISelectionTool> GetL1JetTools() {return m_l1jet_tools;}
-  ToolHandleArray<IMuonRoISelectionTool> GetL1MuonTools() {return m_l1muon_tools;}
+    ToolsRegistry(const std::string& name);
+    ToolsRegistry(const ToolsRegistry& other);
 
-  ToolHandleArray<IHltTauSelectionTool> GetHltTauTools() {return m_hlttau_tools;}
-  
+    virtual ~ToolsRegistry();
 
- private:
+    /// Initialize the tool
+    virtual StatusCode initialize();
 
-  ToolHandleArray<IEmTauSelectionTool> m_l1tau_tools;
-  ToolHandleArray<IEnergySumSelectionTool> m_l1xe_tools;
-  ToolHandleArray<IJetRoISelectionTool> m_l1jet_tools;
-  ToolHandleArray<IMuonRoISelectionTool> m_l1muon_tools;
-  ToolHandleArray<IHltTauSelectionTool> m_hlttau_tools;
+    ToolHandleArray<IEmTauSelectionTool> GetL1TauTools() { return m_l1tau_tools; }
+    ToolHandleArray<IEnergySumSelectionTool> GetL1XeTools() { return m_l1xe_tools; }
+    ToolHandleArray<IJetRoISelectionTool> GetL1JetTools() { return m_l1jet_tools; }
+    ToolHandleArray<IMuonRoISelectionTool> GetL1MuonTools() { return m_l1muon_tools; }
+    ToolHandleArray<IHltTauSelectionTool> GetHltTauTools() { return m_hlttau_tools; }
 
-  bool m_recalculateBDTscore;
+    StatusCode initializeTool(const std::string &name);
 
-  // Declaration of the tools themselves
-  // --> L1 JETS
-  JetRoISelectionTool* m_l1jet_tool_12;
-  JetRoISelectionTool* m_l1jet_tool_20;
-  JetRoISelectionTool* m_l1jet_tool_25;
+  private:
 
-  // --> L1 TAU / ELE
-  EmTauSelectionTool* m_l1tau_tool_8; 
-  EmTauSelectionTool* m_l1tau_tool_12; 
-  EmTauSelectionTool* m_l1tau_tool_15; 
-  EmTauSelectionTool* m_l1tau_tool_20; 
-  EmTauSelectionTool* m_l1tau_tool_25; 
-  EmTauSelectionTool* m_l1tau_tool_30; 
-  EmTauSelectionTool* m_l1tau_tool_40; 
-  EmTauSelectionTool* m_l1tau_tool_60; 
+    ToolHandleArray<IEmTauSelectionTool> m_l1tau_tools;
+    ToolHandleArray<IEnergySumSelectionTool> m_l1xe_tools;
+    ToolHandleArray<IJetRoISelectionTool> m_l1jet_tools;
+    ToolHandleArray<IMuonRoISelectionTool> m_l1muon_tools;
+    ToolHandleArray<IHltTauSelectionTool> m_hlttau_tools;
 
-  EmTauSelectionTool* m_l1tau_tool_12IL; 
-  EmTauSelectionTool* m_l1tau_tool_12IM; 
-  EmTauSelectionTool* m_l1tau_tool_12IT; 
+    bool m_recalculateBDTscore;
 
-  EmTauSelectionTool* m_l1tau_tool_20IL; 
-  EmTauSelectionTool* m_l1tau_tool_20IM; 
-  EmTauSelectionTool* m_l1tau_tool_20IT; 
+    std::map<std::string, ToolInitializeFunction> m_initializeFunctions; 
+    std::vector<ILevel1SelectionTool*> m_initializedLevel1SelectionTools;
+    std::vector<IHltTauSelectionTool*> m_initializedHltTauSelectionTools;
 
-  EmTauSelectionTool* m_l1tau_tool_25IT; 
+    // FTF Ttool
+    FastTrackSelectionTool* m_ftf_tool;
 
-  EmTauSelectionTool* m_l1ele_tool_15; 
-  EmTauSelectionTool* m_l1ele_tool_15HI; 
+    // L1 TAUS
+    StatusCode L1_TAU12();
+    StatusCode L1_TAU12IM();
 
-  // --> L1 MET
-  EnergySumSelectionTool* m_l1xe_tool_35; 
-  EnergySumSelectionTool* m_l1xe_tool_40; 
-  EnergySumSelectionTool* m_l1xe_tool_45; 
-  EnergySumSelectionTool* m_l1xe_tool_50; 
+    // HLT TAUS
+    StatusCode HLT_tau25_perf_tracktwo();
+    StatusCode HLT_tau25_idperf_tracktwo();
 
-  // --> L1 MUONS
-  MuonRoISelectionTool* m_l1muon_tool_10;
-  MuonRoISelectionTool* m_l1muon_tool_20;
+    //// Declaration of the tools themselves
+    //// --> L1 JETS
+    //JetRoISelectionTool* m_l1jet_tool_12;
+    //JetRoISelectionTool* m_l1jet_tool_20;
+    //JetRoISelectionTool* m_l1jet_tool_25;
 
-  // FTF Ttool
-  FastTrackSelectionTool* m_ftf_tool;
-  
-  // --> HLT TAUS
-  HltTauSelectionTool* m_hlttau_tool_25_perf_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_25_perf_calo;
-  HltTauSelectionTool* m_hlttau_tool_25_perf_tracktwo;
-  
-  HltTauSelectionTool* m_hlttau_tool_25_idperf_tracktwo;
-    
-  HltTauSelectionTool* m_hlttau_tool_25_loose1_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_25_loose1_calo;
-  HltTauSelectionTool* m_hlttau_tool_25_loose1_tracktwo;
+    //// --> L1 TAU / ELE
+    //EmTauSelectionTool* m_l1tau_tool_8; 
+    //EmTauSelectionTool* m_l1tau_tool_12; 
+    //EmTauSelectionTool* m_l1tau_tool_15; 
+    //EmTauSelectionTool* m_l1tau_tool_20; 
+    //EmTauSelectionTool* m_l1tau_tool_25; 
+    //EmTauSelectionTool* m_l1tau_tool_30; 
+    //EmTauSelectionTool* m_l1tau_tool_40; 
+    //EmTauSelectionTool* m_l1tau_tool_60; 
 
-  HltTauSelectionTool* m_hlttau_tool_25_medium1_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_25_medium1_calo;
-  HltTauSelectionTool* m_hlttau_tool_25_medium1_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_25_medium1_mvonly;
+    //EmTauSelectionTool* m_l1tau_tool_12IL; 
+    //EmTauSelectionTool* m_l1tau_tool_12IM; 
+    //EmTauSelectionTool* m_l1tau_tool_12IT; 
 
-  HltTauSelectionTool* m_hlttau_tool_25_tight1_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_25_tight1_calo;
-  HltTauSelectionTool* m_hlttau_tool_25_tight1_tracktwo;
+    //EmTauSelectionTool* m_l1tau_tool_20IL; 
+    //EmTauSelectionTool* m_l1tau_tool_20IM; 
+    //EmTauSelectionTool* m_l1tau_tool_20IT; 
 
-  HltTauSelectionTool* m_hlttau_tool_35_loose1_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_35_loose1_ptonly;
+    //EmTauSelectionTool* m_l1tau_tool_25IT; 
 
-  HltTauSelectionTool* m_hlttau_tool_35_medium1_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_35_medium1_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_35_medium1_calo;
+    //EmTauSelectionTool* m_l1ele_tool_15; 
+    //EmTauSelectionTool* m_l1ele_tool_15HI; 
 
-  HltTauSelectionTool* m_hlttau_tool_35_tight1_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_35_tight1_ptonly;
+    //// --> L1 MET
+    //EnergySumSelectionTool* m_l1xe_tool_35; 
+    //EnergySumSelectionTool* m_l1xe_tool_40; 
+    //EnergySumSelectionTool* m_l1xe_tool_45; 
+    //EnergySumSelectionTool* m_l1xe_tool_50; 
 
-  HltTauSelectionTool* m_hlttau_tool_35_perf_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_35_perf_ptonly;
+    //// --> L1 MUONS
+    //MuonRoISelectionTool* m_l1muon_tool_10;
+    //MuonRoISelectionTool* m_l1muon_tool_20;
 
-  HltTauSelectionTool* m_hlttau_tool_80_medium1_calo;
-  HltTauSelectionTool* m_hlttau_tool_80_medium1_tracktwo;
+    //// --> HLT TAUS
+    //HltTauSelectionTool* m_hlttau_tool_25_perf_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_25_perf_calo;
+    //HltTauSelectionTool* m_hlttau_tool_25_perf_tracktwo;
 
-  HltTauSelectionTool* m_hlttau_tool_50_medium1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_25_idperf_tracktwo;
 
-  HltTauSelectionTool* m_hlttau_tool_125_medium1_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_125_medium1_calo;
-  HltTauSelectionTool* m_hlttau_tool_125_perf_tracktwo;
-  HltTauSelectionTool* m_hlttau_tool_125_perf_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_25_loose1_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_25_loose1_calo;
+    //HltTauSelectionTool* m_hlttau_tool_25_loose1_tracktwo;
 
-  HltTauSelectionTool* m_hlttau_tool_160_medium1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_25_medium1_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_25_medium1_calo;
+    //HltTauSelectionTool* m_hlttau_tool_25_medium1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_25_medium1_mvonly;
 
+    //HltTauSelectionTool* m_hlttau_tool_25_tight1_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_25_tight1_calo;
+    //HltTauSelectionTool* m_hlttau_tool_25_tight1_tracktwo;
 
-  HltTauSelectionTool* m_hlttau_tool_5_perf_ptonly;
-  HltTauSelectionTool* m_hlttau_tool_0_perf_ptonly;         
+    //HltTauSelectionTool* m_hlttau_tool_35_loose1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_35_loose1_ptonly;
 
+    //HltTauSelectionTool* m_hlttau_tool_35_medium1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_35_medium1_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_35_medium1_calo;
 
+    //HltTauSelectionTool* m_hlttau_tool_35_tight1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_35_tight1_ptonly;
+
+    //HltTauSelectionTool* m_hlttau_tool_35_perf_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_35_perf_ptonly;
+
+    //HltTauSelectionTool* m_hlttau_tool_80_medium1_calo;
+    //HltTauSelectionTool* m_hlttau_tool_80_medium1_tracktwo;
+
+    //HltTauSelectionTool* m_hlttau_tool_50_medium1_tracktwo;
+
+    //HltTauSelectionTool* m_hlttau_tool_125_medium1_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_125_medium1_calo;
+    //HltTauSelectionTool* m_hlttau_tool_125_perf_tracktwo;
+    //HltTauSelectionTool* m_hlttau_tool_125_perf_ptonly;
+
+    //HltTauSelectionTool* m_hlttau_tool_160_medium1_tracktwo;
+
+    //HltTauSelectionTool* m_hlttau_tool_5_perf_ptonly;
+    //HltTauSelectionTool* m_hlttau_tool_0_perf_ptonly;         
 
 };
 

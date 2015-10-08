@@ -20,7 +20,9 @@ class ChainRegistry : virtual public IChainRegistry, virtual public asg::AsgTool
 
     virtual ~ChainRegistry();
 
+    bool checkChain(const std::string& name);
     HltChain& getChain(const std::string &name);
+    void loadDefaultChain(const std::string &name);
     StatusCode addChain(const std::string &name, const HltChain &chain);
 
     /// Initialize the tool

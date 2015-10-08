@@ -4,6 +4,8 @@
 
 #include "AsgTools/IAsgTool.h"
 
+// Pure virtual so that all our L1 emulation tools can inherit from this
+// Don't implement this class as Level1SelectionTool - implement only derived classes ISomethingSelectionTool and SomethingSelectionTool
 class ILevel1SelectionTool : public virtual asg::IAsgTool
 {
    ASG_TOOL_INTERFACE(ILevel1SelectionTool)

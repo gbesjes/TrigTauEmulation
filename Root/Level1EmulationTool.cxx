@@ -3,8 +3,9 @@
 
 #include <iomanip>
 #include "TMath.h"
-#include "TrigTauEmulation/Level1EmulationTool.h"
 #include "AsgTools/ToolStore.h"
+#include "TrigTauEmulation/Level1EmulationTool.h"
+#include "TrigTauEmulation/ToolsRegistry.h"
 
 namespace TrigTauEmul {
   // Default constructor
@@ -35,6 +36,18 @@ namespace TrigTauEmul {
   Level1EmulationTool::Level1EmulationTool(const Level1EmulationTool& other): asg::AsgTool(other.name() + "_copy")
   {}
 
+  void Level1EmulationTool::GetChains() {
+    auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
+    std::cout << "CALLING GetChains()" << std::endl;
+    
+    m_l1jet_tools = registry->GetL1JetTools();
+    m_l1tau_tools = registry->GetL1TauTools();
+    m_l1xe_tools = registry->GetL1XeTools();
+    m_l1muon_tools = registry->GetL1MuonTools();
+
+    initializeTools();
+  }
+
   Level1EmulationTool::~Level1EmulationTool(){
     delete m_name_parser;
     delete m_l1orl_tool;
@@ -46,7 +59,12 @@ namespace TrigTauEmul {
     // initialize parser
     ATH_CHECK(m_name_parser->initialize());
     m_name_parser->msg().setLevel(this->msg().level());
+  
+    initializeTools();
+    return StatusCode::SUCCESS;
+  }
 
+  StatusCode Level1EmulationTool::initializeTools() {
     ATH_MSG_INFO("Start tool initialization");
     for (auto it: m_l1tau_tools) {
       ATH_MSG_INFO("Initializating "<< it->name());
@@ -139,7 +157,7 @@ namespace TrigTauEmul {
         l1tau->auxdecor<bool>(it.name()) = false;
         ATH_MSG_DEBUG("Decorating with " << it.name());
         if (it->accept(*l1tau)) {
-	  ATH_MSG_DEBUG("Accept " << it.name());
+          ATH_MSG_DEBUG("Accept " << it.name());
         //if (not it->accept(*l1tau)) { //hack
           l1tau->auxdecor<bool>(it.name()) = true;
           m_counters[it.name()] += 1;

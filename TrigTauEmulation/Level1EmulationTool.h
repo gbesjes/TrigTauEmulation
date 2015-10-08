@@ -46,10 +46,12 @@ namespace TrigTauEmul {
     
     /// Initialize the tool
     virtual StatusCode initialize();
+    virtual StatusCode initializeTools();
 
     /// Initialize the tool
     virtual StatusCode finalize();
 
+    void GetChains();
 
     /// 
     virtual StatusCode calculate(const xAOD::EmTauRoIContainer* l1taus, 

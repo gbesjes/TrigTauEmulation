@@ -10,6 +10,7 @@
 #include "AsgTools/ToolStore.h"
 #include "AsgTools/ToolHandle.h"
 
+#include "TrigTauEmulation/ToolsRegistry.h"
 #include "TrigTauEmulation/IHltTauSelectionTool.h"
 #include "TrigTauEmulation/ILevel1SelectionTool.h"
 #include "TrigTauEmulation/EmTauSelectionTool.h"
@@ -26,21 +27,17 @@ class HltItem {
 
   public:
 
-    HltItem(std::string name, std::string seed_name) {
+    HltItem(const std::string& name, const std::string& seed_name) {
       m_name = name;
-      m_l1_seed = seed_name;
-      
-      if(asg::ToolStore::contains<ILevel1SelectionTool>(seed_name)){
-        m_Level1SelectionTool = asg::ToolStore::get<ILevel1SelectionTool>(seed_name);
-        std::cout << "grabbed level1 tool " << seed_name << std::endl;
-      } else {
-        std::stringstream e;
-        e << "No Level1SelectionTool " << seed_name << " found";
-        throw std::invalid_argument(e.str());
-      }
+      setSeed(seed_name);
 
       // are we actually a tau chain? 
       if(not isTau()) return;
+      
+      if(not asg::ToolStore::contains<IHltTauSelectionTool>(name)){
+        // pull up ToolsRegistry and attempt to make it
+        asg::ToolStore::get<ToolsRegistry>("ToolsRegistry")->initializeTool(name);
+      }
 
       if(asg::ToolStore::contains<IHltTauSelectionTool>(name)){
         m_HltTauSelectionTool = asg::ToolStore::get<IHltTauSelectionTool>(name);
@@ -51,6 +48,26 @@ class HltItem {
         throw std::invalid_argument(e.str()); 
       }
       
+    }
+
+    StatusCode setSeed(const std::string& seed_name) {
+      m_l1_seed = seed_name;
+
+      if(not asg::ToolStore::contains<ILevel1SelectionTool>(seed_name)){
+        // pull up ToolsRegistry and attempt to make it
+        asg::ToolStore::get<ToolsRegistry>("ToolsRegistry")->initializeTool(seed_name);
+      }
+
+      if(asg::ToolStore::contains<ILevel1SelectionTool>(seed_name)){
+        m_Level1SelectionTool = asg::ToolStore::get<ILevel1SelectionTool>(seed_name);
+        std::cout << "grabbed level1 tool " << seed_name << std::endl;
+      } else {
+        std::stringstream e;
+        e << "No Level1SelectionTool " << seed_name << " found";
+        throw std::invalid_argument(e.str());
+      }
+
+      return StatusCode::SUCCESS;
     }
 
     const std::string& name() const { return m_name; }
