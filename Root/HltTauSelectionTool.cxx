@@ -67,8 +67,9 @@ StatusCode HltTauSelectionTool::initialize()
   m_calopresel->SetPreselCentFracCut(m_centfrac);
   m_calopresel->SetPreselCentFracStrategy(m_centfrac_strategy);
 
-
-  ATH_CHECK(m_ftf_tool.retrieve());
+  if(m_use_fasttracking){
+    ATH_CHECK(m_ftf_tool.retrieve());
+  }
 
   // --> not needed anymore (central tool now) / will remove soooon
   // m_ftk->SetUseFastTracking(m_use_fasttracking);

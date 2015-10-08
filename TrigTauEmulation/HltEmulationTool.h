@@ -1,4 +1,3 @@
-// vim: ts=2 sw=2
 // author Quentin Buat <quentin.buat@no.spam.cern.ch>
 #ifndef HLTEMULATIONTOOL_HLTEMULATIONTOOL_H
 #define HLTEMULATIONTOOL_HLTEMULATIONTOOL_H
@@ -16,7 +15,6 @@
 #include "TrigTauEmulation/IHltEmulationTool.h"
 #include "TrigTauEmulation/ILevel1EmulationTool.h"
 #include "TrigTauEmulation/IHltTauSelectionTool.h"
-#include "TrigTauEmulation/FastTrackSelectionTool.h"
 
 #include "TrigTauEmulation/HltL1MatchingTool.h"
 #include "TrigTauEmulation/HltChain.h"
@@ -24,111 +22,111 @@
 #include "TrigTauEmulation/DecoratedHltTau.h"
 
 namespace TrigTauEmul {
-  class HltEmulationTool : virtual public IHltEmulationTool, public asg::AsgTool
-  {
+class HltEmulationTool : virtual public IHltEmulationTool, public asg::AsgTool
 
-    /// Proper constructor for Athena
-    ASG_TOOL_CLASS(HltEmulationTool, IHltEmulationTool)
+{
 
-    public:
+  /// Proper constructor for Athena
+  ASG_TOOL_CLASS(HltEmulationTool, IHltEmulationTool)
 
-      /// Standard constructor for standalone usage
-      HltEmulationTool(const std::string& name);
+ public:
+  
+  /// Standard constructor for standalone usage
+  HltEmulationTool(const std::string& name);
 
-      /// Copy constructor for reflex in Athena
-      HltEmulationTool(const HltEmulationTool& other);
+  /// Copy constructor for reflex in Athena
+  HltEmulationTool(const HltEmulationTool& other);
 
-      /// virtual destructor
-      virtual ~HltEmulationTool();
+  /// virtual destructor
+  virtual ~HltEmulationTool();
 
-      /// Initialize the tool
-      virtual StatusCode initialize();
+  /// Initialize the tool
+  virtual StatusCode initialize();
 
-      /// Initialize the tool
-      virtual StatusCode finalize();
+  /// Initialize the tool
+  virtual StatusCode finalize();
 
-      virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
-          const xAOD::JetRoIContainer* l1jets,
-          const xAOD::MuonRoIContainer* l1muons,
-          const xAOD::EnergySumRoI* l1xe,
-          const xAOD::TauJetContainer* hlt_taus,
-          const DataVector<xAOD::TrackParticle>* preselTracksIso,
-          const DataVector<xAOD::TrackParticle>* preselTracksCore);
+  virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
+			     const xAOD::JetRoIContainer* l1jets,
+			     const xAOD::MuonRoIContainer* l1muons,
+			     const xAOD::EnergySumRoI* l1xe,
+			     const xAOD::TauJetContainer* hlt_taus,
+			     const DataVector<xAOD::TrackParticle>* preselTracksIso,
+			     const DataVector<xAOD::TrackParticle>* preselTracksCore);
+  
+  virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
+			     const xAOD::JetRoIContainer* l1jets,
+			     const xAOD::MuonRoIContainer* l1muons,
+			     const xAOD::EnergySumRoI* l1xe,
+                 const std::vector<DecoratedHltTau>& hlt_taus);
 
-      virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
-          const xAOD::JetRoIContainer* l1jets,
-          const xAOD::MuonRoIContainer* l1muons,
-          const xAOD::EnergySumRoI* l1xe,
-          const std::vector<DecoratedHltTau>& hlt_taus);
+  virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
+			     const xAOD::JetRoIContainer* l1jets,
+			     const xAOD::MuonRoIContainer* l1muons,
+			     const xAOD::EnergySumRoI* l1xe,
+			     const xAOD::TauJetContainer* hlt_taus,
+			     const DataVector<xAOD::TrackParticle>* fast_tracks);
 
-      virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
-          const xAOD::JetRoIContainer* l1jets,
-          const xAOD::MuonRoIContainer* l1muons,
-          const xAOD::EnergySumRoI* l1xe,
-          const xAOD::TauJetContainer* hlt_taus,
-          const DataVector<xAOD::TrackParticle>* fast_tracks);
+  /// 
+  virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
+			       const xAOD::EmTauRoIContainer* l1taus,
+			       const DataVector<xAOD::TrackParticle>* fast_tracks);
+  
+  virtual StatusCode calculate(const std::vector<DecoratedHltTau>& hlt_taus,
+			       const xAOD::EmTauRoIContainer* l1taus);
+  
+  virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
+			       const xAOD::EmTauRoIContainer* l1taus,
+			       const DataVector<xAOD::TrackParticle>* preselTracksIso,
+			       const DataVector<xAOD::TrackParticle>* preselTracksCore);
 
-      /// 
-      virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
-          const xAOD::EmTauRoIContainer* l1taus,
-          const DataVector<xAOD::TrackParticle>* fast_tracks);
+  virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
+			     const xAOD::JetRoIContainer* l1jets,
+			     const xAOD::MuonRoIContainer* l1muons,
+			     const xAOD::EnergySumRoI* l1xe,
+			     const xAOD::TauJetContainer* hlt_taus,
+			     const xAOD::TauJetContainer* presel_taus);
 
-      virtual StatusCode calculate(const std::vector<DecoratedHltTau>& hlt_taus,
-          const xAOD::EmTauRoIContainer* l1taus);
+  /// 
+  virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
+			       const xAOD::TauJetContainer* presel_taus,
+			       const xAOD::EmTauRoIContainer* l1taus);
 
-      virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
-          const xAOD::EmTauRoIContainer* l1taus,
-          const DataVector<xAOD::TrackParticle>* preselTracksIso,
-          const DataVector<xAOD::TrackParticle>* preselTracksCore);
+  virtual bool decision(const std::string & chain_name);
 
-      virtual StatusCode execute(const xAOD::EmTauRoIContainer* l1taus, 
-          const xAOD::JetRoIContainer* l1jets,
-          const xAOD::MuonRoIContainer* l1muons,
-          const xAOD::EnergySumRoI* l1xe,
-          const xAOD::TauJetContainer* hlt_taus,
-          const xAOD::TauJetContainer* presel_taus);
+  void clearL1Decision();
 
-      /// 
-      virtual StatusCode calculate(const xAOD::TauJetContainer* hlt_taus,
-          const xAOD::TauJetContainer* presel_taus,
-          const xAOD::EmTauRoIContainer* l1taus);
+ private:
+  bool m_perform_l1_emulation;  
+  bool m_recalculateBDTscore;
 
-      virtual bool decision(const std::string & chain_name);
+  unsigned int m_HLTTriggerCondition;
+  unsigned int m_L1TriggerCondition;
 
-      void clearL1Decision();
+  HltL1MatchingTool * m_matching_tool;
 
-    private:
-      bool m_perform_l1_emulation;  
-      bool m_recalculateBDTscore;
+  std::vector<std::string> m_hlt_chains_vec;
 
-      unsigned int m_HLTTriggerCondition;
-      unsigned int m_L1TriggerCondition;
+  std::map<std::string, bool> m_HLT_tau_decision;
+  std::map<std::string, bool> m_L1_tau_decision;
+  std::map<std::string, bool> m_L1_tau_decision_calculated;
 
-      HltL1MatchingTool* m_matching_tool;
+  void reset_tau_decision();
+  StatusCode calculate_tau_decision(const std::vector<DecoratedHltTau>& hlt_taus,
+				    const xAOD::EmTauRoIContainer* l1taus);
+  StatusCode calculate_tau_decision(const xAOD::TauJetContainer* hlt_taus,
+				    const xAOD::EmTauRoIContainer* l1taus);
 
-      std::vector<std::string> m_hlt_chains_vec;
+  ToolHandle<TrigTauEmul::ILevel1EmulationTool> m_l1_emulation_tool;
+  ToolHandleArray<IHltTauSelectionTool> m_hlt_tau_tools;
+  ToolHandle<Trig::TrigDecisionTool> *m_trigdec_tool;
 
-      std::map<std::string, bool> m_HLT_tau_decision;
-      std::map<std::string, bool> m_L1_tau_decision;
-      std::map<std::string, bool> m_L1_tau_decision_calculated;
 
-      void reset_tau_decision();
-      StatusCode calculate_tau_decision(const std::vector<DecoratedHltTau>& hlt_taus,
-          const xAOD::EmTauRoIContainer* l1taus);
-      StatusCode calculate_tau_decision(const xAOD::TauJetContainer* hlt_taus,
-          const xAOD::EmTauRoIContainer* l1taus);
 
-      void buildHltChain(const std::string& name, const std::string& L1_name);
+  std::map<std::string, HltChain> m_chains;
 
-      ToolHandle<TrigTauEmul::ILevel1EmulationTool> m_l1_emulation_tool;
-      ToolHandleArray<IHltTauSelectionTool> m_hlt_tau_tools;
-      
-      ToolHandle<FastTrackSelectionTool> m_ftf_handle;
-      ToolHandle<Trig::TrigDecisionTool> *m_trigdec_tool;
 
-      std::map<std::string, HltChain> m_chains;
-
-  };
+};
 
 }  // End of the namespace
 

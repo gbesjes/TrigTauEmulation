@@ -2,11 +2,7 @@
 //Local Includes
 
 #include "TrigTauEmulation/HltEmulationTool.h"
-#include "TrigTauEmulation/HltTauSelectionTool.h"
-#include "TrigTauEmulation/FastTrackSelectionTool.h"
 #include "TrigDecisionTool/Conditions.h"
-
-#include <typeinfo>
 
 namespace TrigTauEmul {
 
@@ -22,7 +18,6 @@ namespace TrigTauEmul {
     declareProperty("PerformL1Emulation", m_perform_l1_emulation=true);
     declareProperty("Level1EmulationTool", m_l1_emulation_tool);
     declareProperty("HltTauTools", m_hlt_tau_tools);
-    declareProperty("FastTrackSelectionTool", m_ftf_handle); //needed to build chains on the fly
 
     declareProperty("HLTTriggerCondition", m_HLTTriggerCondition=TrigDefs::Physics);
     declareProperty("L1TriggerCondition", m_L1TriggerCondition=TrigDefs::Physics);
@@ -51,107 +46,25 @@ namespace TrigTauEmul {
   HltEmulationTool::HltEmulationTool(const HltEmulationTool& other): asg::AsgTool(other.name() + "_copy")
   {}
 
-  // Build HLT tau chain from a name
-  void HltEmulationTool::buildHltChain(const std::string& name, const std::string& L1_name=""){
-    std::string s(name);
-    std::string delimiter = "_";    
-
-    std::vector<std::string> nameParts;
-
-    size_t pos = 0;
-    std::string token;
-    while ((pos = s.find(delimiter)) != std::string::npos) {
-      token = s.substr(0, pos);
-      nameParts.push_back(token);
-      s.erase(0, pos + delimiter.length());
-    }
-    nameParts.push_back(s);
-
-    // no L1 name? find the HLT chain that looks similar to us
-    std::string originalHltName("");
-    if(L1_name == ""){
-      std::stringstream ss;
-      //for(size_t i = 0; i < v.size(); ++i) {
-      for(size_t i = 0; i < 4; ++i) { // template is HLT_tau<pt>_<something>_<something>
-        if(i != 0) { ss << "_"; }
-        ss << nameParts[i];
-      }
-      originalHltName = ss.str();
-    }
-
-    std::cout << "originalHltName = " << originalHltName << std::endl;
-
-    // now see what we can do with it
-    unsigned i = 0;
-    
-    HltTauSelectionTool *m_newTool = new HltTauSelectionTool(name);
-    auto m_newHandle = ToolHandle<IHltTauSelectionTool>(m_newTool);
-    for(auto &s: nameParts) {
-      ++i;
-      if(s == "HLT") { continue; }
-      std::cout << i << " " << s << std::endl;
-      
-      if(s.find("tau") != std::string::npos and s.find("L1") == std::string::npos) {
-        //this is the pT cut
-        s.erase(s.find("tau"), strlen("tau"));
-        double pT = atof(s.c_str());
-        //std::cout << "pT = " << pT << std::endl;
-        m_newTool->setProperty("PreselPt", 1000*pT);
-      }
-
-    }
-    //outside the loop since we can have combinations of these items
-    
-    //first, BDT scores
-    if(name.find("perf") != std::string::npos){ //will also pick up idperf
-      m_newTool->setProperty("UseTauID", false);
-    } else if(name.find("loose") != std::string::npos){
-      m_newTool->setProperty("UseTauID", true);
-      m_newTool->setProperty("IdLevel", "loose");
-    } else if(name.find("medium") != std::string::npos){
-      m_newTool->setProperty("UseTauID", true);
-      m_newTool->setProperty("IdLevel", "medium");
-    } else if(name.find("tight") != std::string::npos){
-      m_newTool->setProperty("UseTauID", true);
-      m_newTool->setProperty("IdLevel", "tight");
-    } 
-
-    //tracking
-    if(name.find("tracktwo") != std::string::npos and name.find("idperf") == std::string::npos) {
-      m_newTool->setProperty("UseFastTracking", true);
-      std::cout << typeid(m_ftf_handle).name() << std::endl;
-      m_newTool->setProperty("FastTrackSelectionTool", m_ftf_handle);
-    } else {
-      m_newTool->setProperty("UseFastTracking", false);
-    }
-
-    m_newTool->setProperty("UseCaloPresel", false);
-
-  }
-
   // Initialize
   StatusCode HltEmulationTool::initialize() {
-    
-    // build a vector with names - the handles to the real tools get grabbed later
     m_chains.clear();
     if (m_hlt_chains_vec.size() !=0) {
       std::map<std::string, HltChain> all_chains = HltParsing::chains();
-      for (auto &ch: m_hlt_chains_vec) { 
+      for (auto ch: m_hlt_chains_vec) { 
         if(all_chains.find(ch) == all_chains.end()) {
-          ATH_MSG_INFO("Skipping unknown HLT chain " << ch); //TODO: we need to be able to parse the name here
-          buildHltChain(ch);
+          ATH_MSG_INFO("Skipping unknown HLT chain " << ch);
           continue;
         }
         ATH_MSG_INFO("Grabbing chain " << ch);
         m_chains[ch] = all_chains[ch];
       }
     } else {
-      ATH_MSG_FATAL("No HLT chains are passed to the tool");
-      return StatusCode::FAILURE;
+      ATH_MSG_WARNING("No HLT Chains are passed to the tool");
     }
     // m_chains = HltParsing::chains();
 
-    if(m_chains.size() == 0) {
+    if(m_chains.size() == 0){
       ATH_MSG_FATAL("No initialised HLT tools found!");
       return StatusCode::FAILURE;
     }
@@ -159,7 +72,7 @@ namespace TrigTauEmul {
     // Build the list of l1 tools 
     std::set<std::string> l1_items;
     std::set<std::string> l1_seeds;
-    for (auto &chain : m_chains) {
+    for (auto &chain : m_chains)  {
       ATH_MSG_INFO("Consider " << chain.first << " with " << chain.second.n_tau_items() << " taus.");
 
       // 1) consider the l1 accept
@@ -192,7 +105,7 @@ namespace TrigTauEmul {
     }
 
     ATH_MSG_DEBUG("Available L1 seeds:");
-    for (auto &s: l1_seeds) {
+    for (auto s: l1_seeds) {
       ATH_MSG_DEBUG("\t" << s);
     }
 
@@ -207,24 +120,25 @@ namespace TrigTauEmul {
 
     ATH_CHECK(m_trigdec_tool->retrieve());
 
-    // Now grab handles to all the HLT chains - TODO: here we need to be able to build one on the fly from a name
-    
     // erasing from a ToolHandleArray creates an odd segfault, so write a new one
     ToolHandleArray<IHltTauSelectionTool> used_hlt_tau_tools;
     for(auto it: m_hlt_tau_tools) {
       if(m_chains.find("HLT_"+it->name()) == m_chains.end()){
         ATH_MSG_INFO("not using tool " << it->name());
+        //++it;
       } else {
         ATH_MSG_INFO("will use tool " << it->name());
         used_hlt_tau_tools.push_back(it);
+        //++it;
       }
     }
 
-    // Copy & initialise all tools 
     m_hlt_tau_tools = used_hlt_tau_tools;
+
     for (auto it: m_hlt_tau_tools) {
       ATH_MSG_INFO("Initializing " << it->name());
       ATH_CHECK(it->initialize());
+      // it->msg().setLevel(this->msg().level());
     }
     return StatusCode::SUCCESS;
   }

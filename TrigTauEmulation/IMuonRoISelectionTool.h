@@ -4,10 +4,12 @@
 #include "AsgTools/IAsgTool.h"
 #include "PATCore/TAccept.h"
 
+#include "TrigTauEmulation/ILevel1SelectionTool.h"
+
 //EDM include
 #include "xAODTrigger/MuonRoI.h"
 
-class IMuonRoISelectionTool : public virtual asg::IAsgTool
+class IMuonRoISelectionTool : public virtual ILevel1SelectionTool
 {
 
    ASG_TOOL_INTERFACE(IMuonRoISelectionTool)

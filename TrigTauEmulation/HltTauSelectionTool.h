@@ -18,6 +18,7 @@
 /* #endif */
 
 class HltTauSelectionTool : public virtual IHltTauSelectionTool, public asg::AsgTool
+
 {
 
 
