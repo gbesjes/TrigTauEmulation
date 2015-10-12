@@ -2,6 +2,8 @@
 #ifndef TOOLSREGISTRY_TOOLSREGISTRY_H
 #define TOOLSREGISTRY_TOOLSREGISTRY_H
 
+# include <unordered_set>
+
 // Framework includes
 #include "AsgTools/AsgTool.h"
 #include "AsgTools/ToolHandle.h"
@@ -26,18 +28,13 @@
 
 #include <type_traits>
 
-//typedef StatusCode (*ToolInitializeFunction)(void); // function pointer type
-
-class ToolsRegistry;
-typedef StatusCode (ToolsRegistry::*ToolInitializeFunction)(); 
-//typedef return_type (*TypeName)(paramType1, paramTypeN); 
-
 class ToolsRegistry : virtual public IToolsRegistry, virtual public asg::AsgTool
-
 {
   ASG_TOOL_CLASS(ToolsRegistry, IToolsRegistry)
+  
+  //typedef StatusCode (ToolsRegistry::*ToolInitializeFunction)(void);
 
-  //using ToolInitializeFunction = std::add_pointer<StatusCode()>::type;
+  using ToolInitializeFunction = StatusCode (ToolsRegistry::*)(void); // New introduced syntax
 
   public:
 
@@ -68,8 +65,9 @@ class ToolsRegistry : virtual public IToolsRegistry, virtual public asg::AsgTool
     bool m_recalculateBDTscore;
 
     std::map<std::string, ToolInitializeFunction> m_initializeFunctions; 
-    std::vector<ILevel1SelectionTool*> m_initializedLevel1SelectionTools;
-    std::vector<IHltTauSelectionTool*> m_initializedHltTauSelectionTools;
+    std::unordered_set<std::string> m_initializedToolNames;
+    //std::vector<ILevel1SelectionTool*> m_initializedLevel1SelectionTools;
+    //std::vector<IHltTauSelectionTool*> m_initializedHltTauSelectionTools;
 
     // FTF Ttool
     FastTrackSelectionTool* m_ftf_tool;

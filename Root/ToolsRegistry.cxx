@@ -5,10 +5,11 @@
 StatusCode ToolsRegistry::L1_TAU12IM() {
   auto m_l1tau_tool_12IM = new EmTauSelectionTool("TAU12IM");
   m_l1tau_tools.push_back(ToolHandle<IEmTauSelectionTool>(m_l1tau_tool_12IM));
+  
   ATH_CHECK(m_l1tau_tool_12IM->setProperty("ClusterPt", 12000.));
   ATH_CHECK(m_l1tau_tool_12IM->setProperty("IsolationOffset", 2000.));
 
-  m_initializedLevel1SelectionTools.push_back(m_l1tau_tool_12IM);
+  //m_initializedLevel1SelectionTools.push_back(m_l1tau_tool_12IM);
 
   return StatusCode::SUCCESS;
 }
@@ -16,6 +17,7 @@ StatusCode ToolsRegistry::L1_TAU12IM() {
 StatusCode ToolsRegistry::L1_TAU12() {
   auto m_l1tau_tool_12 = new EmTauSelectionTool("TAU12");
   m_l1tau_tools.push_back(ToolHandle<IEmTauSelectionTool>(m_l1tau_tool_12));
+  
   ATH_CHECK(m_l1tau_tool_12->setProperty("ClusterPt", 12000.));
   ATH_CHECK(m_l1tau_tool_12->setProperty("IsolationThresh", -9999.));
 
@@ -41,10 +43,11 @@ StatusCode ToolsRegistry::HLT_tau25_perf_tracktwo() {
 
   return StatusCode::SUCCESS;
 }
-  
+
 StatusCode ToolsRegistry::HLT_tau25_idperf_tracktwo() {
   auto m_hlttau_tool_25_idperf_tracktwo = new HltTauSelectionTool("tau25_idperf_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_idperf_tracktwo));
+  
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("PreselPt", 25000.));
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UsePresel", false));
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UseFastTracking", false));
@@ -63,9 +66,10 @@ StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   }
 
   auto func = it->second;
-  return (this->*func)();
+  ATH_CHECK( (this->*func)() );
+  m_initializedToolNames.insert(name);
 
-  //return (it->*second)();
+  return StatusCode::SUCCESS;
 }
 
 ToolsRegistry::ToolsRegistry(const std::string & name) 
@@ -230,13 +234,11 @@ ToolsRegistry::ToolsRegistry(const std::string & name)
 }
 
 ToolsRegistry::~ToolsRegistry(){
-    //for(auto it: m_initializedTools){
+    //for(auto it: m_initializedToolNames){
+    //  TODO: get ptr to tool from toolstore; delete it
       //auto tool = it;
       //delete tool;
     //}
-
-    m_initializedLevel1SelectionTools.clear();
-    m_initializedHltTauSelectionTools.clear();
 
     //delete m_l1jet_tool_12;
     //delete m_l1jet_tool_20;
