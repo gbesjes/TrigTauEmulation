@@ -1,5 +1,7 @@
 // vim: ts=2 sw=2
 
+#include "TrigTauEmulation/ToolsRegistry.h"
+
 StatusCode ToolsRegistry::L1_J12() {
     auto m_l1jet_tool_12 = new JetRoISelectionTool("J12");
     m_l1jet_tools.push_back(ToolHandle<IJetRoISelectionTool>(m_l1jet_tool_12));

@@ -1,5 +1,7 @@
 // vim: ts=2 sw=2
 
+#include "TrigTauEmulation/ToolsRegistry.h"
+
 StatusCode ToolsRegistry::HLT_tau25_perf_ptonly() {
   auto m_hlttau_tool_25_perf_ptonly = new HltTauSelectionTool("tau25_perf_ptonly");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_perf_ptonly));
