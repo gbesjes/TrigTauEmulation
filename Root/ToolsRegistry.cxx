@@ -2,60 +2,6 @@
 
 #include "TrigTauEmulation/ToolsRegistry.h"
 
-StatusCode ToolsRegistry::L1_TAU12IM() {
-  auto m_l1tau_tool_12IM = new EmTauSelectionTool("TAU12IM");
-  m_l1tau_tools.push_back(ToolHandle<IEmTauSelectionTool>(m_l1tau_tool_12IM));
-  
-  ATH_CHECK(m_l1tau_tool_12IM->setProperty("ClusterPt", 12000.));
-  ATH_CHECK(m_l1tau_tool_12IM->setProperty("IsolationOffset", 2000.));
-
-  //m_initializedLevel1SelectionTools.push_back(m_l1tau_tool_12IM);
-
-  return StatusCode::SUCCESS;
-}
-
-StatusCode ToolsRegistry::L1_TAU12() {
-  auto m_l1tau_tool_12 = new EmTauSelectionTool("TAU12");
-  m_l1tau_tools.push_back(ToolHandle<IEmTauSelectionTool>(m_l1tau_tool_12));
-  
-  ATH_CHECK(m_l1tau_tool_12->setProperty("ClusterPt", 12000.));
-  ATH_CHECK(m_l1tau_tool_12->setProperty("IsolationThresh", -9999.));
-
-  //m_initializedTools.push_back(m_l1tau_tool_12);
-
-  return StatusCode::SUCCESS;
-}
-
-StatusCode ToolsRegistry::HLT_tau25_perf_tracktwo() {
-  auto m_hlttau_tool_25_perf_tracktwo = new HltTauSelectionTool("tau25_perf_tracktwo");
-  m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_perf_tracktwo));
-  
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("PreselPt", 25000.));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UsePresel", false));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UseCaloPresel", false));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UseFastTracking", true));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UseTauID", false));
-  ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
-
-  //m_initializedTools.push_back(m_hlttau_tool_25_perf_tracktwo);
-
-  return StatusCode::SUCCESS;
-}
-
-StatusCode ToolsRegistry::HLT_tau25_idperf_tracktwo() {
-  auto m_hlttau_tool_25_idperf_tracktwo = new HltTauSelectionTool("tau25_idperf_tracktwo");
-  m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_idperf_tracktwo));
-  
-  ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("PreselPt", 25000.));
-  ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UsePresel", false));
-  ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UseFastTracking", false));
-  ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UseTauID", false));
-  ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   auto it = m_initializeFunctions.find(name);
@@ -72,7 +18,7 @@ StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   return StatusCode::SUCCESS;
 }
 
-ToolsRegistry::ToolsRegistry(const std::string & name) 
+ToolsRegistry::ToolsRegistry(const std::string & name)
   : asg::AsgTool(name),
     m_l1tau_tools(),
     m_l1xe_tools(),
@@ -81,14 +27,70 @@ ToolsRegistry::ToolsRegistry(const std::string & name)
 {
 
   declareProperty("RecalculateBDTscore", m_recalculateBDTscore=false, "Recalculate tau BDT scores");
-  
+
   // FTF TOOL
   m_ftf_tool = new FastTrackSelectionTool("FastTrackSelector");
-  
-  m_initializeFunctions["TAU12"] = &ToolsRegistry::L1_TAU12; 
-  m_initializeFunctions["TAU12IM"] = &ToolsRegistry::L1_TAU12IM; 
-  m_initializeFunctions["tau25_idperf_tracktwo"] = &ToolsRegistry::HLT_tau25_idperf_tracktwo; 
-  m_initializeFunctions["tau25_perf_tracktwo"] = &ToolsRegistry::HLT_tau25_perf_tracktwo; 
+
+  m_initializeFunctions["J12"] = &ToolsRegistry::L1_J12;
+  m_initializeFunctions["J20"] = &ToolsRegistry::L1_J20;
+  m_initializeFunctions["J25"] = &ToolsRegistry::L1_J25;
+  m_initializeFunctions["TAU8"] = &ToolsRegistry::L1_TAU8;
+  m_initializeFunctions["TAU12"] = &ToolsRegistry::L1_TAU12;
+  m_initializeFunctions["TAU15"] = &ToolsRegistry::L1_TAU15;
+  m_initializeFunctions["TAU20"] = &ToolsRegistry::L1_TAU20;
+  m_initializeFunctions["TAU25"] = &ToolsRegistry::L1_TAU25;
+  m_initializeFunctions["TAU30"] = &ToolsRegistry::L1_TAU30;
+  m_initializeFunctions["TAU40"] = &ToolsRegistry::L1_TAU40;
+  m_initializeFunctions["TAU60"] = &ToolsRegistry::L1_TAU60;
+  m_initializeFunctions["TAU12IL"] = &ToolsRegistry::L1_TAU12IL;
+  m_initializeFunctions["TAU12IM"] = &ToolsRegistry::L1_TAU12IM;
+  m_initializeFunctions["TAU12IT"] = &ToolsRegistry::L1_TAU12IT;
+  m_initializeFunctions["TAU20IL"] = &ToolsRegistry::L1_TAU20IL;
+  m_initializeFunctions["TAU20IM"] = &ToolsRegistry::L1_TAU20IM;
+  m_initializeFunctions["TAU20IT"] = &ToolsRegistry::L1_TAU20IT;
+  m_initializeFunctions["TAU25IT"] = &ToolsRegistry::L1_TAU25IT;
+  m_initializeFunctions["EM15"] = &ToolsRegistry::L1_EM15;
+  m_initializeFunctions["EM15HI"] = &ToolsRegistry::L1_EM15HI;
+  m_initializeFunctions["XE35"] = &ToolsRegistry::L1_XE35;
+  m_initializeFunctions["XE40"] = &ToolsRegistry::L1_XE40;
+  m_initializeFunctions["XE45"] = &ToolsRegistry::L1_XE45;
+  m_initializeFunctions["XE50"] = &ToolsRegistry::L1_XE50;
+  m_initializeFunctions["MU10"] = &ToolsRegistry::L1_MU10;
+  m_initializeFunctions["MU20"] = &ToolsRegistry::L1_MU20;
+
+  m_initializeFunctions["tau25_perf_ptonly"] = &ToolsRegistry::HLT_tau25_perf_ptonly;
+  m_initializeFunctions["tau25_perf_calo"] = &ToolsRegistry::HLT_tau25_perf_calo;
+  m_initializeFunctions["tau25_perf_tracktwo"] = &ToolsRegistry::HLT_tau25_perf_tracktwo;
+  m_initializeFunctions["tau25_idperf_tracktwo"] = &ToolsRegistry::HLT_tau25_idperf_tracktwo;
+  m_initializeFunctions["tau25_loose1_ptonly"] = &ToolsRegistry::HLT_tau25_loose1_ptonly;
+  m_initializeFunctions["tau25_loose1_calo"] = &ToolsRegistry::HLT_tau25_loose1_calo;
+  m_initializeFunctions["tau25_loose1_tracktwo"] = &ToolsRegistry::HLT_tau25_loose1_tracktwo;
+  m_initializeFunctions["tau25_medium1_ptonly"] = &ToolsRegistry::HLT_tau25_medium1_ptonly;
+  m_initializeFunctions["tau25_medium1_calo"] = &ToolsRegistry::HLT_tau25_medium1_calo;
+  m_initializeFunctions["tau25_medium1_tracktwo"] = &ToolsRegistry::HLT_tau25_medium1_tracktwo;
+  m_initializeFunctions["tau25_medium1_mvonly"] = &ToolsRegistry::HLT_tau25_medium1_mvonly;
+  m_initializeFunctions["tau25_tight1_ptonly"] = &ToolsRegistry::HLT_tau25_tight1_ptonly;
+  m_initializeFunctions["tau25_tight1_calo"] = &ToolsRegistry::HLT_tau25_tight1_calo;
+  m_initializeFunctions["tau25_tight1_tracktwo"] = &ToolsRegistry::HLT_tau25_tight1_tracktwo;
+  m_initializeFunctions["tau35_loose1_tracktwo"] = &ToolsRegistry::HLT_tau35_loose1_tracktwo;
+  m_initializeFunctions["tau35_loose1_ptonly"] = &ToolsRegistry::HLT_tau35_loose1_ptonly;
+  m_initializeFunctions["tau35_medium1_tracktwo"] = &ToolsRegistry::HLT_tau35_medium1_tracktwo;
+  m_initializeFunctions["tau35_medium1_ptonly"] = &ToolsRegistry::HLT_tau35_medium1_ptonly;
+  m_initializeFunctions["tau35_medium1_calo"] = &ToolsRegistry::HLT_tau35_medium1_calo;
+  m_initializeFunctions["tau35_tight1_tracktwo"] = &ToolsRegistry::HLT_tau35_tight1_tracktwo;
+  m_initializeFunctions["tau35_tight1_ptonly"] = &ToolsRegistry::HLT_tau35_tight1_ptonly;
+  m_initializeFunctions["tau35_perf_tracktwo"] = &ToolsRegistry::HLT_tau35_perf_tracktwo;
+  m_initializeFunctions["tau35_perf_ptonly"] = &ToolsRegistry::HLT_tau35_perf_ptonly;
+  m_initializeFunctions["tau80_medium1_calo"] = &ToolsRegistry::HLT_tau80_medium1_calo;
+  m_initializeFunctions["tau80_medium1_tracktwo"] = &ToolsRegistry::HLT_tau80_medium1_tracktwo;
+  m_initializeFunctions["tau50_medium1_tracktwo"] = &ToolsRegistry::HLT_tau50_medium1_tracktwo;
+  m_initializeFunctions["tau125_medium1_tracktwo"] = &ToolsRegistry::HLT_tau125_medium1_tracktwo;
+  m_initializeFunctions["tau125_medium1_calo"] = &ToolsRegistry::HLT_tau125_medium1_calo;
+  m_initializeFunctions["tau125_perf_tracktwo"] = &ToolsRegistry::HLT_tau125_perf_tracktwo;
+  m_initializeFunctions["tau125_perf_ptonly"] = &ToolsRegistry::HLT_tau125_perf_ptonly;
+  m_initializeFunctions["tau160_medium1_tracktwo"] = &ToolsRegistry::HLT_tau160_medium1_tracktwo;
+  m_initializeFunctions["tau5_perf_ptonly"] = &ToolsRegistry::HLT_tau5_perf_ptonly;
+  m_initializeFunctions["tau0_perf_ptonly"] = &ToolsRegistry::HLT_tau0_perf_ptonly;
 
   //// Declaration of the all the tools we might need in the run
   //// This block of code could be significantly improved by only making
@@ -176,25 +178,25 @@ ToolsRegistry::ToolsRegistry(const std::string & name)
   //m_hlttau_tool_25_tight1_ptonly        = new HltTauSelectionTool("tau25_tight1_ptonly");
   //m_hlttau_tool_25_tight1_calo          = new HltTauSelectionTool("tau25_tight1_calo");
   //m_hlttau_tool_25_tight1_tracktwo      = new HltTauSelectionTool("tau25_tight1_tracktwo");
-  //m_hlttau_tool_35_loose1_tracktwo      = new HltTauSelectionTool("tau35_loose1_tracktwo");    
-  //m_hlttau_tool_35_loose1_ptonly        = new HltTauSelectionTool("tau35_loose1_ptonly");	    
-  //m_hlttau_tool_35_medium1_tracktwo     = new HltTauSelectionTool("tau35_medium1_tracktwo");   
-  //m_hlttau_tool_35_medium1_ptonly       = new HltTauSelectionTool("tau35_medium1_ptonly");	    
-  //m_hlttau_tool_35_medium1_calo         = new HltTauSelectionTool("tau35_medium1_calo");	    
-  //m_hlttau_tool_35_tight1_tracktwo      = new HltTauSelectionTool("tau35_tight1_tracktwo");    
-  //m_hlttau_tool_35_tight1_ptonly        = new HltTauSelectionTool("tau35_tight1_ptonly");	    
-  //m_hlttau_tool_35_perf_tracktwo        = new HltTauSelectionTool("tau35_perf_tracktwo");	    
-  //m_hlttau_tool_35_perf_ptonly          = new HltTauSelectionTool("tau35_perf_ptonly");	    
-  //m_hlttau_tool_80_medium1_calo         = new HltTauSelectionTool("tau80_medium1_calo");	    
-  //m_hlttau_tool_80_medium1_tracktwo     = new HltTauSelectionTool("tau80_medium1_tracktwo");   
-  //m_hlttau_tool_50_medium1_tracktwo     = new HltTauSelectionTool("tau50_medium1_tracktwo");   
-  //m_hlttau_tool_125_medium1_tracktwo    = new HltTauSelectionTool("tau125_medium1_tracktwo");  
-  //m_hlttau_tool_125_medium1_calo        = new HltTauSelectionTool("tau125_medium1_calo");	    
-  //m_hlttau_tool_125_perf_tracktwo       = new HltTauSelectionTool("tau125_perf_tracktwo");	    
-  //m_hlttau_tool_125_perf_ptonly         = new HltTauSelectionTool("tau125_perf_ptonly");	    
-  //m_hlttau_tool_160_medium1_tracktwo    = new HltTauSelectionTool("tau160_medium1_tracktwo");  
-  //m_hlttau_tool_5_perf_ptonly           = new HltTauSelectionTool("tau5_perf_ptonly");	    
-  //m_hlttau_tool_0_perf_ptonly           = new HltTauSelectionTool("tau0_perf_ptonly");         
+  //m_hlttau_tool_35_loose1_tracktwo      = new HltTauSelectionTool("tau35_loose1_tracktwo");
+  //m_hlttau_tool_35_loose1_ptonly        = new HltTauSelectionTool("tau35_loose1_ptonly");
+  //m_hlttau_tool_35_medium1_tracktwo     = new HltTauSelectionTool("tau35_medium1_tracktwo");
+  //m_hlttau_tool_35_medium1_ptonly       = new HltTauSelectionTool("tau35_medium1_ptonly");
+  //m_hlttau_tool_35_medium1_calo         = new HltTauSelectionTool("tau35_medium1_calo");
+  //m_hlttau_tool_35_tight1_tracktwo      = new HltTauSelectionTool("tau35_tight1_tracktwo");
+  //m_hlttau_tool_35_tight1_ptonly        = new HltTauSelectionTool("tau35_tight1_ptonly");
+  //m_hlttau_tool_35_perf_tracktwo        = new HltTauSelectionTool("tau35_perf_tracktwo");
+  //m_hlttau_tool_35_perf_ptonly          = new HltTauSelectionTool("tau35_perf_ptonly");
+  //m_hlttau_tool_80_medium1_calo         = new HltTauSelectionTool("tau80_medium1_calo");
+  //m_hlttau_tool_80_medium1_tracktwo     = new HltTauSelectionTool("tau80_medium1_tracktwo");
+  //m_hlttau_tool_50_medium1_tracktwo     = new HltTauSelectionTool("tau50_medium1_tracktwo");
+  //m_hlttau_tool_125_medium1_tracktwo    = new HltTauSelectionTool("tau125_medium1_tracktwo");
+  //m_hlttau_tool_125_medium1_calo        = new HltTauSelectionTool("tau125_medium1_calo");
+  //m_hlttau_tool_125_perf_tracktwo       = new HltTauSelectionTool("tau125_perf_tracktwo");
+  //m_hlttau_tool_125_perf_ptonly         = new HltTauSelectionTool("tau125_perf_ptonly");
+  //m_hlttau_tool_160_medium1_tracktwo    = new HltTauSelectionTool("tau160_medium1_tracktwo");
+  //m_hlttau_tool_5_perf_ptonly           = new HltTauSelectionTool("tau5_perf_ptonly");
+  //m_hlttau_tool_0_perf_ptonly           = new HltTauSelectionTool("tau0_perf_ptonly");
 
 
   //m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_perf_ptonly          ));
@@ -325,7 +327,7 @@ StatusCode ToolsRegistry::initialize()
 
   //ATH_CHECK(m_l1tau_tool_20->setProperty("ClusterPt", 20000.));
   //ATH_CHECK(m_l1tau_tool_20->setProperty("IsolationThresh", -9999.));
- 
+
   //ATH_CHECK(m_l1tau_tool_25->setProperty("ClusterPt", 25000.));
   //ATH_CHECK(m_l1tau_tool_25->setProperty("IsolationThresh", -9999.));
 
@@ -334,7 +336,7 @@ StatusCode ToolsRegistry::initialize()
 
   //ATH_CHECK(m_l1tau_tool_40->setProperty("ClusterPt", 40000.));
   //ATH_CHECK(m_l1tau_tool_40->setProperty("IsolationThresh", -9999.));
- 
+
   //ATH_CHECK(m_l1tau_tool_60->setProperty("ClusterPt", 60000.));
   //ATH_CHECK(m_l1tau_tool_60->setProperty("IsolationThresh", -9999.));
 
@@ -393,8 +395,8 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_25_perf_ptonly->setProperty("UseTauID", false));
   //ATH_CHECK(m_hlttau_tool_25_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("PreselPt", 25000.));	    
-  //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("CentFracStrategy", "pt_dependent"));	    
+  //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("PreselPt", 25000.));
+  //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("CentFracStrategy", "pt_dependent"));
   //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("UseFastTracking", false));
   //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("UseTauID", false));
   //ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
@@ -422,8 +424,8 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_25_loose1_ptonly->setProperty("IdLevel", "loose"));
   //ATH_CHECK(m_hlttau_tool_25_loose1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("PreselPt", 25000.));	    
-  //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("CentFracStrategy", "pt_dependent"));	    
+  //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("PreselPt", 25000.));
+  //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("CentFracStrategy", "pt_dependent"));
   //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("UseFastTracking", false));
   //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("UseTauID", true));
   //ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("IdLevel", "loose"));
@@ -444,8 +446,8 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_25_medium1_ptonly->setProperty("IdLevel", "medium"));
   //ATH_CHECK(m_hlttau_tool_25_medium1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("PreselPt", 25000.));	    
-  //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("CentFracStrategy", "pt_dependent"));	    
+  //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("PreselPt", 25000.));
+  //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("CentFracStrategy", "pt_dependent"));
   //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("UseFastTracking", false));
   //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("UseTauID", true));
   //ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("IdLevel", "medium"));
@@ -473,8 +475,8 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_25_tight1_ptonly->setProperty("IdLevel", "tight"));
   //ATH_CHECK(m_hlttau_tool_25_tight1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("PreselPt", 25000.));	    
-  //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("CentFracStrategy", "pt_dependent"));	    
+  //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("PreselPt", 25000.));
+  //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("CentFracStrategy", "pt_dependent"));
   //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("UseFastTracking", false));
   //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("UseTauID", true));
   //ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("IdLevel", "tight"));
@@ -488,12 +490,12 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("IdLevel", "tight"));
   //ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("PreselPt", 35000.));    
-  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseCaloPresel", false));    
-  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseFastTracking", true));    
+  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("PreselPt", 35000.));
+  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseCaloPresel", false));
+  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseFastTracking", true));
   //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
-  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseTauID", true));    
-  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("IdLevel", "loose"));    
+  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseTauID", true));
+  //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("IdLevel", "loose"));
   //ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
   //ATH_CHECK(m_hlttau_tool_35_loose1_ptonly->setProperty("PreselPt", 35000.));
@@ -504,7 +506,7 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_35_loose1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
   //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("PreselPt", 35000.));
-  //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseCaloPresel", false)); 
+  //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseCaloPresel", false));
   //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseFastTracking", true));
   //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   //ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseTauID", true));
@@ -526,8 +528,8 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_35_medium1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
 
-  //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("PreselPt", 35000.));    
-  //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseCaloPresel", false)); 
+  //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("PreselPt", 35000.));
+  //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseCaloPresel", false));
   //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseFastTracking", true));
   //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   //ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseTauID", true));
@@ -543,14 +545,14 @@ StatusCode ToolsRegistry::initialize()
   //ATH_CHECK(m_hlttau_tool_35_tight1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
 
-  //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("PreselPt", 35000.));	    
+  //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("PreselPt", 35000.));
   //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseCaloPresel", false));
   //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseFastTracking", true));
   //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseTauID", false));
   //ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
 
-  //ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("PreselPt", 35000.));	    
+  //ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("PreselPt", 35000.));
   //ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("UseCaloPresel", false));
   //ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("UseFastTracking", false));
   //ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("UseTauID", false));
@@ -630,4 +632,3 @@ StatusCode ToolsRegistry::initialize()
 
   return StatusCode::SUCCESS;
 }
-
