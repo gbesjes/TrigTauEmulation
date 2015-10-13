@@ -16,6 +16,15 @@
 #include "TrigTauEmulation/EmTauSelectionTool.h"
 #include "TrigTauEmulation/EmTauSelectionTool.h"
 
+#ifdef ASGTOOL_STANDALONE
+  using toolStoreCntains = asg::ToolStore::contains;
+#else
+  template< typename T >
+  static bool toolStoreContains( const std::string& name ) {
+    return ( dynamic_cast< T* >( asg::ToolStore::get( name ) ) != 0 );
+  }
+#endif
+
 class HltItem {
   private:
 
@@ -34,13 +43,13 @@ class HltItem {
       // are we actually a tau chain? 
       if(not isTau()) return;
       
-      if(not asg::ToolStore::contains<IHltTauSelectionTool>(name)){
+      if(not toolStoreContains<IHltTauSelectionTool>(name)){
         // pull up ToolsRegistry and attempt to make it
         asg::ToolStore::get<ToolsRegistry>("ToolsRegistry")->initializeTool(name);
       }
 
-      if(asg::ToolStore::contains<IHltTauSelectionTool>(name)){
-        m_HltTauSelectionTool = asg::ToolStore::get<IHltTauSelectionTool>(name);
+      if(toolStoreContains<IHltTauSelectionTool>(name)){
+        m_HltTauSelectionTool = ToolHandle<IHltTauSelectionTool>(asg::ToolStore::get<IHltTauSelectionTool>(name));
         std::cout << "grabbed HLT tool " << name << std::endl;
       } else {
         std::stringstream e;
@@ -53,13 +62,13 @@ class HltItem {
     StatusCode setSeed(const std::string& seed_name) {
       m_l1_seed = seed_name;
 
-      if(not asg::ToolStore::contains<ILevel1SelectionTool>(seed_name)){
+      if(not toolStoreContains<ILevel1SelectionTool>(seed_name)){
         // pull up ToolsRegistry and attempt to make it
         asg::ToolStore::get<ToolsRegistry>("ToolsRegistry")->initializeTool(seed_name);
       }
 
-      if(asg::ToolStore::contains<ILevel1SelectionTool>(seed_name)){
-        m_Level1SelectionTool = asg::ToolStore::get<ILevel1SelectionTool>(seed_name);
+      if(toolStoreContains<ILevel1SelectionTool>(seed_name)){
+        m_Level1SelectionTool = ToolHandle<ILevel1SelectionTool>(asg::ToolStore::get<ILevel1SelectionTool>(seed_name));
         std::cout << "grabbed level1 tool " << seed_name << std::endl;
       } else {
         std::stringstream e;

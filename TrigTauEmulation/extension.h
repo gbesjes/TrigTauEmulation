@@ -153,7 +153,8 @@ class ExtensionContainer {
 #ifdef EXTENSION_USING_CPP_TYPE_INDEX
         extension->type = std::type_index(typeid(typename std::remove_pointer<T>::type));
 #else
-        extension->type = FastType<typename std::remove_pointer<T>::type>::value;
+        //extension->type = FastType<typename std::remove_pointer<T>::type>::value;
+        extension->Extension<E>::type = FastType<typename std::remove_pointer<T>::type>::value;
 #endif
         extensions.push_back(extension);
     }
