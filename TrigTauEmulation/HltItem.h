@@ -16,8 +16,12 @@
 #include "TrigTauEmulation/EmTauSelectionTool.h"
 #include "TrigTauEmulation/EmTauSelectionTool.h"
 
+// Athena has an old version of ASG Tools, so alias the function to something
 #ifdef ASGTOOL_STANDALONE
-  using toolStoreCntains = asg::ToolStore::contains;
+  template< typename T>
+  static bool toolStoreContains( const std::string& name ) {
+    return asg::ToolStore::contains<T>(name);
+  }
 #else
   template< typename T >
   static bool toolStoreContains( const std::string& name ) {
