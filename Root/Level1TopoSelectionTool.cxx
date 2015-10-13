@@ -4,7 +4,7 @@
 const double DELTA_OVERLAP_J = round(100*((0.1)*(0.1)));
 const double DELTA_OVERLAP_EMTAU = round(100*((0.0)*(0.0)));
 // Default constructor Level1TopoSelectionTool
-Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : asg::AsgTool(name)
+Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : Level1SelectionTool(name)
 {
   declareProperty("DeltaR", m_delta_r=2.8, "DeltaR matching requirement");
   declareProperty("DeltaPhi", m_delta_phi = 0.1, "DeltaPhi matching requirement");
@@ -14,17 +14,15 @@ Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : asg:
   declareProperty("BoxDeltaEta", m_box_delta_eta=2.0, "BOX Delta Eta requirement");
 
   // m_topo_decisions = new std::map<std::string, bool>();
-
 }
 
 // Copy constructor
-Level1TopoSelectionTool::Level1TopoSelectionTool(const Level1TopoSelectionTool& other) : asg::AsgTool(other.name() + "_copy")
+Level1TopoSelectionTool::Level1TopoSelectionTool(const Level1TopoSelectionTool& other) : Level1SelectionTool(other.name() + "_copy")
 {}
 
 // Tool initialize
 StatusCode Level1TopoSelectionTool::initialize()
 {
-
   return StatusCode::SUCCESS;
 }
 

@@ -7,10 +7,10 @@
 
 // Local includes
 #include "TrigTauEmulation/IEmTauSelectionTool.h"
+#include "TrigTauEmulation/Level1SelectionTool.h"
 
-class EmTauSelectionTool : public virtual IEmTauSelectionTool, public asg::AsgTool
+class EmTauSelectionTool : public virtual IEmTauSelectionTool, public Level1SelectionTool
 {
-
   ASG_TOOL_CLASS(EmTauSelectionTool, IEmTauSelectionTool)
 
   public:

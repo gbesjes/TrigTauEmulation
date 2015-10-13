@@ -8,8 +8,9 @@
 
 // Local includes
 #include "TrigTauEmulation/IMuonRoISelectionTool.h"
+#include "TrigTauEmulation/Level1SelectionTool.h"
 
-class MuonRoISelectionTool : public virtual IMuonRoISelectionTool, public asg::AsgTool
+class MuonRoISelectionTool : public virtual IMuonRoISelectionTool, public Level1SelectionTool
 {
   ASG_TOOL_CLASS(MuonRoISelectionTool, IMuonRoISelectionTool)
 

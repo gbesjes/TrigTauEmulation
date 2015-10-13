@@ -7,8 +7,9 @@
 
 // Local includes
 #include "TrigTauEmulation/IJetRoISelectionTool.h"
+#include "TrigTauEmulation/Level1SelectionTool.h"
 
-class JetRoISelectionTool : public virtual IJetRoISelectionTool, public asg::AsgTool
+class JetRoISelectionTool : public virtual IJetRoISelectionTool, public Level1SelectionTool
 {
 
   ASG_TOOL_CLASS(JetRoISelectionTool, IJetRoISelectionTool)

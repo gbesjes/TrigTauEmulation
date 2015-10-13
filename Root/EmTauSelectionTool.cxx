@@ -1,7 +1,7 @@
 #include "TrigTauEmulation/EmTauSelectionTool.h"
 
 // Default constructor
-EmTauSelectionTool::EmTauSelectionTool(const std::string& name) : asg::AsgTool(name)
+EmTauSelectionTool::EmTauSelectionTool(const std::string& name) : Level1SelectionTool(name)
 {
   declareProperty("ClusterPt", m_roi_pt_cut=12000., "cut on the EmTauRoI transverse energy");
   declareProperty("ClusterEta", m_roi_eta_cut=2.5, "cut on the EmTauRoi |eta|");
@@ -19,7 +19,7 @@ EmTauSelectionTool::EmTauSelectionTool(const std::string& name) : asg::AsgTool(n
 }
 
 // Copy constructor
-EmTauSelectionTool::EmTauSelectionTool(const EmTauSelectionTool& other) : asg::AsgTool(other.name() + "_copy")
+EmTauSelectionTool::EmTauSelectionTool(const EmTauSelectionTool& other) : Level1SelectionTool(other.name() + "_copy")
 {}
 
 // Tool initialize

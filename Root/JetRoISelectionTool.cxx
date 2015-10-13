@@ -1,7 +1,7 @@
 #include "TrigTauEmulation/JetRoISelectionTool.h"
 
 // Default constructor
-JetRoISelectionTool::JetRoISelectionTool(const std::string& name) : asg::AsgTool(name)
+JetRoISelectionTool::JetRoISelectionTool(const std::string& name) : Level1SelectionTool(name)
 {
   declareProperty("ClusterPt", m_roi_pt=25000., "cut on the JetRoI transverse energy");
   declareProperty("ClusterEta", m_roi_eta=3.2, "cut on the JetRoi |eta|");
@@ -9,7 +9,7 @@ JetRoISelectionTool::JetRoISelectionTool(const std::string& name) : asg::AsgTool
 }
 
 // Copy constructor
-JetRoISelectionTool::JetRoISelectionTool(const JetRoISelectionTool& other) : asg::AsgTool(other.name() + "_copy")
+JetRoISelectionTool::JetRoISelectionTool(const JetRoISelectionTool& other) : Level1SelectionTool(other.name() + "_copy")
 {}
 
 // Tool initialize

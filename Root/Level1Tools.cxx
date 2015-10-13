@@ -46,7 +46,7 @@ StatusCode ToolsRegistry::L1_TAU12() {
     ATH_CHECK(m_l1tau_tool_12->setProperty("ClusterPt", 12000.));
     ATH_CHECK(m_l1tau_tool_12->setProperty("IsolationThresh", -9999.));
 
-    addExtension<IEmTauSelectionTool*>(m_l1tau_tool_12);
+    addExtension<EmTauSelectionTool*>(m_l1tau_tool_12);
 
     return StatusCode::SUCCESS;
 }
@@ -128,7 +128,7 @@ StatusCode ToolsRegistry::L1_TAU12IM() {
     ATH_CHECK(m_l1tau_tool_12IM->setProperty("ClusterPt", 12000.));
     ATH_CHECK(m_l1tau_tool_12IM->setProperty("IsolationOffset", 2000.));
     
-    addExtension<IEmTauSelectionTool*>(m_l1tau_tool_12IM);
+    addExtension<EmTauSelectionTool*>(m_l1tau_tool_12IM);
 
     return StatusCode::SUCCESS;
 }

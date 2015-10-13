@@ -5,32 +5,26 @@
 // Framework includes
 #include "AsgTools/AsgTool.h"
 
-
 #include "TrigTauEmulation/HltTauSelection.h"
 /* #include "TrigTauEmulation/HltTauCaloPresel.h" */
 /* #include "TrigTauEmulation/HltTauID.h" */
 /* #include "TrigTauEmulation/FastTrackSelection.h" */
 
 #include "TrigTauEmulation/IHltTauSelectionTool.h"
+#include "TrigTauEmulation/SelectionTool.h"
 #include "TrigTauEmulation/FastTrackSelectionTool.h"
 /* #ifdef ASGTOOL_STANDALONE */
 /*  #include "TauDiscriminant/TauDiscriminantTool.h" */
 /* #endif */
 
-class HltTauSelectionTool : public virtual IHltTauSelectionTool, public asg::AsgTool
-
+class HltTauSelectionTool : public virtual IHltTauSelectionTool, public SelectionTool
 {
-
-
-  /// Proper constructor for Athena
   ASG_TOOL_CLASS(HltTauSelectionTool, IHltTauSelectionTool)
 
   public:
 
     HltTauSelectionTool(const std::string & name);
-
     HltTauSelectionTool(const HltTauSelectionTool & other);
-
     ~HltTauSelectionTool();
 
     virtual StatusCode initialize();

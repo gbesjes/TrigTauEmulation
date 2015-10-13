@@ -3,7 +3,7 @@
 #include "TrigTauEmulation/Utils.h"
 
 //Default constructor
-HltTauSelectionTool::HltTauSelectionTool(const std::string& name) : asg::AsgTool(name)
+HltTauSelectionTool::HltTauSelectionTool(const std::string& name) : SelectionTool(name)
 
 {
 
@@ -40,7 +40,7 @@ HltTauSelectionTool::HltTauSelectionTool(const std::string& name) : asg::AsgTool
 }
 
 // Copy constructor
-HltTauSelectionTool::HltTauSelectionTool(const HltTauSelectionTool& other) : asg::AsgTool(other.name() + "_copy")
+HltTauSelectionTool::HltTauSelectionTool(const HltTauSelectionTool& other) : SelectionTool(other.name() + "_copy")
 {}
 
 

@@ -9,11 +9,10 @@
 // Don't implement this class as Level1SelectionTool - implement only derived classes ISomethingSelectionTool and SomethingSelectionTool
 class ILevel1SelectionTool : public virtual ISelectionTool
 {
-   ASG_TOOL_INTERFACE(ILevel1SelectionTool)
-    
- public:
+  ASG_TOOL_INTERFACE(ILevel1SelectionTool)
 
-  virtual ~ILevel1SelectionTool() {};
+  public:
+    virtual ~ILevel1SelectionTool() {};
 
 };
 
