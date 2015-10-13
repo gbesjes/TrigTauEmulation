@@ -2,7 +2,8 @@
 #ifndef TOOLSREGISTRY_TOOLSREGISTRY_H
 #define TOOLSREGISTRY_TOOLSREGISTRY_H
 
-# include <unordered_set>
+#include <unordered_set>
+#include <type_traits>
 
 // Framework includes
 #include "AsgTools/AsgTool.h"
@@ -25,8 +26,6 @@
 #include "TrigTauEmulation/HltTauSelectionTool.h"
 
 #include "TrigTauEmulation/FastTrackSelectionTool.h"
-
-#include <type_traits>
 
 #include "TrigTauEmulation/ISelectionTool.h"
 #include "TrigTauEmulation/extension.h"
@@ -137,6 +136,5 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     StatusCode HLT_tau125_perf_ptonly();
     StatusCode HLT_tau160_medium1_tracktwo();
 };
-
 
 #endif

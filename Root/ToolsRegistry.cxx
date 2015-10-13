@@ -111,9 +111,14 @@ ToolsRegistry::~ToolsRegistry(){
       //delete tool;
     //}
 
+  ExtensionStack exts = clearExtensions(); 
+  while (auto ext = exts.pop_back()) { 
+    delete ext;
+  }
+
 }
 
-ToolsRegistry::ToolsRegistry(const ToolsRegistry& other): asg::AsgTool(other.name() + "_copy")
+ToolsRegistry::ToolsRegistry(const ToolsRegistry& other): asg::AsgTool(other.name() + "_copy"), ExtensionContainer(other)
 {}
 
 StatusCode ToolsRegistry::initialize()
