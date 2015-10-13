@@ -11,6 +11,8 @@ StatusCode ToolsRegistry::HLT_tau25_perf_ptonly() {
   ATH_CHECK(m_hlttau_tool_25_perf_ptonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_25_perf_ptonly->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_25_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+    
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_perf_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -25,6 +27,8 @@ StatusCode ToolsRegistry::HLT_tau25_perf_calo() {
   ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_25_perf_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_perf_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -42,6 +46,8 @@ StatusCode ToolsRegistry::HLT_tau25_perf_tracktwo() {
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_perf_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -56,6 +62,8 @@ StatusCode ToolsRegistry::HLT_tau25_idperf_tracktwo() {
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_25_idperf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_idperf_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -72,6 +80,8 @@ StatusCode ToolsRegistry::HLT_tau25_loose1_ptonly() {
   ATH_CHECK(m_hlttau_tool_25_loose1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_loose1_ptonly->setProperty("IdLevel", "loose"));
   ATH_CHECK(m_hlttau_tool_25_loose1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_loose1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -87,6 +97,8 @@ StatusCode ToolsRegistry::HLT_tau25_loose1_calo() {
   ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("IdLevel", "loose"));
   ATH_CHECK(m_hlttau_tool_25_loose1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_loose1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -104,6 +116,8 @@ StatusCode ToolsRegistry::HLT_tau25_loose1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("IdLevel", "loose"));
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_loose1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -119,6 +133,8 @@ StatusCode ToolsRegistry::HLT_tau25_medium1_ptonly() {
   ATH_CHECK(m_hlttau_tool_25_medium1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_medium1_ptonly->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_25_medium1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_medium1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -134,6 +150,8 @@ StatusCode ToolsRegistry::HLT_tau25_medium1_calo() {
   ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_25_medium1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_medium1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -152,6 +170,8 @@ StatusCode ToolsRegistry::HLT_tau25_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("IdLevel", "medium"));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -166,6 +186,8 @@ StatusCode ToolsRegistry::HLT_tau25_medium1_mvonly() {
   ATH_CHECK(m_hlttau_tool_25_medium1_mvonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_25_medium1_mvonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_medium1_mvonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_medium1_mvonly);
 
   return StatusCode::SUCCESS;
 }
@@ -181,6 +203,8 @@ StatusCode ToolsRegistry::HLT_tau25_tight1_ptonly() {
   ATH_CHECK(m_hlttau_tool_25_tight1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_tight1_ptonly->setProperty("IdLevel", "tight"));
   ATH_CHECK(m_hlttau_tool_25_tight1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_tight1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -196,6 +220,8 @@ StatusCode ToolsRegistry::HLT_tau25_tight1_calo() {
   ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("IdLevel", "tight"));
   ATH_CHECK(m_hlttau_tool_25_tight1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_tight1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -213,6 +239,8 @@ StatusCode ToolsRegistry::HLT_tau25_tight1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("IdLevel", "tight"));
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_25_tight1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -230,6 +258,8 @@ StatusCode ToolsRegistry::HLT_tau35_loose1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("IdLevel", "loose"));
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_loose1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -245,6 +275,8 @@ StatusCode ToolsRegistry::HLT_tau35_loose1_ptonly() {
   ATH_CHECK(m_hlttau_tool_35_loose1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_loose1_ptonly->setProperty("IdLevel", "loose"));
   ATH_CHECK(m_hlttau_tool_35_loose1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_loose1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -262,6 +294,8 @@ StatusCode ToolsRegistry::HLT_tau35_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -277,6 +311,8 @@ StatusCode ToolsRegistry::HLT_tau35_medium1_ptonly() {
   ATH_CHECK(m_hlttau_tool_35_medium1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_medium1_ptonly->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_35_medium1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_medium1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -292,6 +328,8 @@ StatusCode ToolsRegistry::HLT_tau35_medium1_calo() {
   ATH_CHECK(m_hlttau_tool_35_medium1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_medium1_calo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_35_medium1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_medium1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -309,6 +347,8 @@ StatusCode ToolsRegistry::HLT_tau35_tight1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("IdLevel", "tight"));
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_tight1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -324,6 +364,8 @@ StatusCode ToolsRegistry::HLT_tau35_tight1_ptonly() {
   ATH_CHECK(m_hlttau_tool_35_tight1_ptonly->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_35_tight1_ptonly->setProperty("IdLevel", "tight"));
   ATH_CHECK(m_hlttau_tool_35_tight1_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_tight1_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -340,6 +382,8 @@ StatusCode ToolsRegistry::HLT_tau35_perf_tracktwo() {
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_perf_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -354,6 +398,8 @@ StatusCode ToolsRegistry::HLT_tau35_perf_ptonly() {
   ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_35_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_35_perf_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -369,6 +415,8 @@ StatusCode ToolsRegistry::HLT_tau80_medium1_calo() {
   ATH_CHECK(m_hlttau_tool_80_medium1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_80_medium1_calo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_80_medium1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_80_medium1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -386,6 +434,8 @@ StatusCode ToolsRegistry::HLT_tau80_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_80_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -403,6 +453,8 @@ StatusCode ToolsRegistry::HLT_tau50_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_50_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -420,6 +472,8 @@ StatusCode ToolsRegistry::HLT_tau125_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_125_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -435,6 +489,8 @@ StatusCode ToolsRegistry::HLT_tau125_medium1_calo() {
   ATH_CHECK(m_hlttau_tool_125_medium1_calo->setProperty("UseTauID", true));
   ATH_CHECK(m_hlttau_tool_125_medium1_calo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_125_medium1_calo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_125_medium1_calo);
 
   return StatusCode::SUCCESS;
 }
@@ -451,6 +507,8 @@ StatusCode ToolsRegistry::HLT_tau125_perf_tracktwo() {
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_125_perf_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -465,6 +523,8 @@ StatusCode ToolsRegistry::HLT_tau125_perf_ptonly() {
   ATH_CHECK(m_hlttau_tool_125_perf_ptonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_125_perf_ptonly->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_125_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_125_perf_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -482,6 +542,8 @@ StatusCode ToolsRegistry::HLT_tau160_medium1_tracktwo() {
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("IdLevel", "medium"));
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("FastTrackSelectionTool", ftf_handle));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_160_medium1_tracktwo);
 
   return StatusCode::SUCCESS;
 }
@@ -496,6 +558,8 @@ StatusCode ToolsRegistry::HLT_tau5_perf_ptonly() {
   ATH_CHECK(m_hlttau_tool_5_perf_ptonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_5_perf_ptonly->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_5_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_5_perf_ptonly);
 
   return StatusCode::SUCCESS;
 }
@@ -510,6 +574,8 @@ StatusCode ToolsRegistry::HLT_tau0_perf_ptonly() {
   ATH_CHECK(m_hlttau_tool_0_perf_ptonly->setProperty("UseFastTracking", false));
   ATH_CHECK(m_hlttau_tool_0_perf_ptonly->setProperty("UseTauID", false));
   ATH_CHECK(m_hlttau_tool_0_perf_ptonly->setProperty("RecalculateBDTscore", m_recalculateBDTscore));
+  
+  addTool<HltTauSelectionTool*>(m_hlttau_tool_0_perf_ptonly);
 
   return StatusCode::SUCCESS;
 }

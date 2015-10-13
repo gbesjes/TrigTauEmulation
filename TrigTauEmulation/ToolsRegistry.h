@@ -35,7 +35,8 @@ using namespace bitpowder::lib;
 class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public IToolsRegistry, virtual public asg::AsgTool
 {
   ASG_TOOL_CLASS(ToolsRegistry, IToolsRegistry)
-  using ToolInitializeFunction = StatusCode (ToolsRegistry::*)(void); 
+  //using ToolInitializeFunction = StatusCode (ToolsRegistry::*)(void); 
+  using ToolInitializeFunction = std::function< StatusCode(void) >;
 
   public:
 
@@ -56,6 +57,22 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     StatusCode initializeTool(const std::string &name);
 
     const FastTrackSelectionTool* getFTFTool() { return m_ftf_tool; }
+
+    // simple map to make the naming of the ExtensionContainer more logical to the user
+    template <class T>
+    void addTool(const T& tool) {
+      addExtension(tool);
+    }
+    
+    template <class T>
+    auto selectTools() -> decltype(this->selectExtensions<T>()) {
+      return this->selectExtensions<T>();
+    }
+    
+    template <class T>
+    auto selectToolsOfBaseType() -> decltype(this->selectExtensionsOfBaseType<T>()) {
+      return this->selectExtensionsOfBaseType<T>();
+    }
 
   private:
 

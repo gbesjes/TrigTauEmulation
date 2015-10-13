@@ -59,7 +59,6 @@ namespace TrigTauEmul {
 				 const xAOD::MuonRoIContainer* l1muons,
 				 const xAOD::EnergySumRoI* l1xe);
 
-
     virtual bool decision(const std::string & chain_name);
 
     virtual StatusCode PrintReport(const xAOD::EmTauRoIContainer* l1taus, 
@@ -69,8 +68,7 @@ namespace TrigTauEmul {
 
     virtual StatusCode PrintCounters();
 
-    virtual std::vector<std::string> GetL1Chains() {return m_l1_chains_vec;}
-
+    virtual std::vector<std::string> GetL1Chains() { return m_l1_chains_vec; }
     virtual StatusCode removeUnusedTools(const std::set<std::string>& usedTools);
 
   private:
