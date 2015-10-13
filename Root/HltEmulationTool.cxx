@@ -116,7 +116,9 @@ namespace TrigTauEmul {
 
     // pass these on to the matching tool
     m_matching_tool->msg().setLevel(this->msg().level());
-    ATH_CHECK(m_matching_tool->setProperty("L1seeds", l1_seeds));
+
+    std::vector<std::string> l1_seeds_vec(l1_seeds.begin(), l1_seeds.end());
+    ATH_CHECK(m_matching_tool->setProperty("L1seeds", l1_seeds_vec));
     ATH_CHECK(m_matching_tool->initialize());
     
     //clean up obsolete L1 tools

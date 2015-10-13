@@ -4,6 +4,7 @@
 
 // Framework includes
 #include "AsgTools/AsgTool.h"
+#include "AsgTools/ToolHandle.h"
 
 #include "TrigTauEmulation/HltTauSelection.h"
 /* #include "TrigTauEmulation/HltTauCaloPresel.h" */
@@ -12,7 +13,7 @@
 
 #include "TrigTauEmulation/IHltTauSelectionTool.h"
 #include "TrigTauEmulation/SelectionTool.h"
-#include "TrigTauEmulation/FastTrackSelectionTool.h"
+#include "TrigTauEmulation/IFastTrackSelectionTool.h"
 /* #ifdef ASGTOOL_STANDALONE */
 /*  #include "TauDiscriminant/TauDiscriminantTool.h" */
 /* #endif */
@@ -42,7 +43,8 @@ class HltTauSelectionTool : public virtual IHltTauSelectionTool, public Selectio
     HltTauID* m_tauid;
     // --> not needed anymore (central tool now) / will remove soooon
     /* FastTrackSelection* m_ftk; */
-    ToolHandle<FastTrackSelectionTool> m_ftf_tool;
+    ToolHandle<IFastTrackSelectionTool> m_ftf_tool;
+
     // calo presel
     bool m_use_presel;
     bool m_use_calo_presel;

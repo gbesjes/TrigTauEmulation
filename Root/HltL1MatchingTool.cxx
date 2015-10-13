@@ -3,7 +3,7 @@
 #include "TrigTauEmulation/Utils.h"
 
 HltL1MatchingTool::HltL1MatchingTool(const std::string & name) : asg::AsgTool(name)  {
-  std::set<std::string> l1seeds;
+  std::vector<std::string> l1seeds;
   declareProperty("dR_cut", m_dr_cut=0.4, "DR cut");
   declareProperty("L1seeds", m_l1seeds = l1seeds, "L1 seeds");
 }
@@ -14,7 +14,7 @@ HltL1MatchingTool::HltL1MatchingTool(const HltL1MatchingTool & other) : asg::Asg
 } 
 
 StatusCode HltL1MatchingTool::initialize() {
-  m_l1seeds.insert(""); //generic flag; this was the old matching style (best dR)
+  m_l1seeds.push_back(""); //generic flag; this was the old matching style (best dR)
   return StatusCode::SUCCESS;
 }
 

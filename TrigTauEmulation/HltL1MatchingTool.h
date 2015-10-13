@@ -28,7 +28,7 @@ class HltL1MatchingTool : public virtual IHltL1MatchingTool, public asg::AsgTool
   
   virtual StatusCode match(const xAOD::TauJet * hlt_tau, const xAOD::EmTauRoIContainer * l1_taus);
   double m_dr_cut;
-  std::set<std::string> m_l1seeds;
+  std::vector<std::string> m_l1seeds;
 
 };
 #endif

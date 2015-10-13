@@ -38,7 +38,7 @@ StatusCode ToolsRegistry::HLT_tau25_perf_tracktwo() {
   auto m_hlttau_tool_25_perf_tracktwo = new HltTauSelectionTool("tau25_perf_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_perf_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("PreselPt", 25000.));
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UsePresel", false));
   ATH_CHECK(m_hlttau_tool_25_perf_tracktwo->setProperty("UseCaloPresel", false));
@@ -108,7 +108,7 @@ StatusCode ToolsRegistry::HLT_tau25_loose1_tracktwo() {
   auto m_hlttau_tool_25_loose1_tracktwo = new HltTauSelectionTool("tau25_loose1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_loose1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("PreselPt", 25000.));
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_25_loose1_tracktwo->setProperty("UseFastTracking", true));
@@ -161,7 +161,7 @@ StatusCode ToolsRegistry::HLT_tau25_medium1_tracktwo() {
   auto m_hlttau_tool_25_medium1_tracktwo = new HltTauSelectionTool("tau25_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("PreselPt", 25000.));
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_25_medium1_tracktwo->setProperty("UseFastTracking", true));
@@ -231,7 +231,7 @@ StatusCode ToolsRegistry::HLT_tau25_tight1_tracktwo() {
   auto m_hlttau_tool_25_tight1_tracktwo = new HltTauSelectionTool("tau25_tight1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_25_tight1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("PreselPt", 25000.));
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_25_tight1_tracktwo->setProperty("UseFastTracking", true));
@@ -250,7 +250,7 @@ StatusCode ToolsRegistry::HLT_tau35_loose1_tracktwo() {
   auto m_hlttau_tool_35_loose1_tracktwo = new HltTauSelectionTool("tau35_loose1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_35_loose1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("PreselPt", 35000.));
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_35_loose1_tracktwo->setProperty("UseFastTracking", true));
@@ -286,7 +286,7 @@ StatusCode ToolsRegistry::HLT_tau35_medium1_tracktwo() {
   auto m_hlttau_tool_35_medium1_tracktwo = new HltTauSelectionTool("tau35_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_35_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("PreselPt", 35000.));
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_35_medium1_tracktwo->setProperty("UseFastTracking", true));
@@ -339,7 +339,7 @@ StatusCode ToolsRegistry::HLT_tau35_tight1_tracktwo() {
   auto m_hlttau_tool_35_tight1_tracktwo = new HltTauSelectionTool("tau35_tight1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_35_tight1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("PreselPt", 35000.));
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_35_tight1_tracktwo->setProperty("UseFastTracking", true));
@@ -375,7 +375,7 @@ StatusCode ToolsRegistry::HLT_tau35_perf_tracktwo() {
   auto m_hlttau_tool_35_perf_tracktwo = new HltTauSelectionTool("tau35_perf_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_35_perf_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("PreselPt", 35000.));
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_35_perf_tracktwo->setProperty("UseFastTracking", true));
@@ -426,7 +426,7 @@ StatusCode ToolsRegistry::HLT_tau80_medium1_tracktwo() {
   auto m_hlttau_tool_80_medium1_tracktwo = new HltTauSelectionTool("tau80_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_80_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("PreselPt", 80000.));
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_80_medium1_tracktwo->setProperty("UseFastTracking", true));
@@ -445,7 +445,7 @@ StatusCode ToolsRegistry::HLT_tau50_medium1_tracktwo() {
   auto m_hlttau_tool_50_medium1_tracktwo = new HltTauSelectionTool("tau50_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_50_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("PreselPt", 50000.));
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_50_medium1_tracktwo->setProperty("UseFastTracking", true));
@@ -464,7 +464,7 @@ StatusCode ToolsRegistry::HLT_tau125_medium1_tracktwo() {
   auto m_hlttau_tool_125_medium1_tracktwo = new HltTauSelectionTool("tau125_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_125_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("PreselPt", 125000.));
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_125_medium1_tracktwo->setProperty("UseFastTracking", true));
@@ -500,7 +500,7 @@ StatusCode ToolsRegistry::HLT_tau125_perf_tracktwo() {
   auto m_hlttau_tool_125_perf_tracktwo = new HltTauSelectionTool("tau125_perf_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_125_perf_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("PreselPt", 125000.));
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_125_perf_tracktwo->setProperty("UseFastTracking", true));
@@ -534,7 +534,7 @@ StatusCode ToolsRegistry::HLT_tau160_medium1_tracktwo() {
   auto m_hlttau_tool_160_medium1_tracktwo = new HltTauSelectionTool("tau160_medium1_tracktwo");
   m_hlttau_tools.push_back(ToolHandle<IHltTauSelectionTool>(m_hlttau_tool_160_medium1_tracktwo));
 
-  ToolHandle<FastTrackSelectionTool> ftf_handle(m_ftf_tool);
+  ToolHandle<IFastTrackSelectionTool> ftf_handle(m_ftf_tool);
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("PreselPt", 160000.));
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("UseCaloPresel", false));
   ATH_CHECK(m_hlttau_tool_160_medium1_tracktwo->setProperty("UseFastTracking", true));

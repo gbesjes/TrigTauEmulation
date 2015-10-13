@@ -20,8 +20,6 @@ FastTrackSelectionTool::FastTrackSelectionTool(const std::string& name) : asg::A
 FastTrackSelectionTool::FastTrackSelectionTool(const FastTrackSelectionTool& other) : asg::AsgTool(other.name() + "_copy")
 {}
 
-FastTrackSelectionTool::~FastTrackSelectionTool() 
-{}
 
 StatusCode FastTrackSelectionTool::initialize()
 {
@@ -39,7 +37,7 @@ inline const xAOD::TrackParticle* FastTrackSelectionTool::findLeadingTrack(const
     const double lead_deta = Utils::DeltaEta((*tr)->eta(), hlt_tau->etaDetectorAxis());
     const double lead_dphi = Utils::DeltaPhi((*tr)->phi(), hlt_tau->phiDetectorAxis());
 
-    const double lead_dR = Utils::DeltaR((*tr)->eta(), (*tr)->phi(), hlt_tau->etaDetectorAxis(), hlt_tau->phiDetectorAxis());
+    // const double lead_dR = Utils::DeltaR((*tr)->eta(), (*tr)->phi(), hlt_tau->etaDetectorAxis(), hlt_tau->phiDetectorAxis());
     //const double lead_dR = Utils::DeltaR((*tr)->eta(), (*tr)->phi(), hlt_tau->eta(), hlt_tau->phi() );
     if (not (lead_deta < 0.1 and lead_dphi < 0.1)) {
     // if (!(lead_dR < 0.1)) {
