@@ -48,12 +48,6 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     /// Initialize the tool
     virtual StatusCode initialize();
 
-    ToolHandleArray<IEmTauSelectionTool> GetL1TauTools() { return m_l1tau_tools; }
-    ToolHandleArray<IEnergySumSelectionTool> GetL1XeTools() { return m_l1xe_tools; }
-    ToolHandleArray<IJetRoISelectionTool> GetL1JetTools() { return m_l1jet_tools; }
-    ToolHandleArray<IMuonRoISelectionTool> GetL1MuonTools() { return m_l1muon_tools; }
-    ToolHandleArray<IHltTauSelectionTool> GetHltTauTools() { return m_hlttau_tools; }
-
     StatusCode initializeTool(const std::string &name);
 
     const FastTrackSelectionTool* getFTFTool() { return m_ftf_tool; }
@@ -65,6 +59,11 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     }
     
     template <class T>
+    auto removeTool() -> decltype(this->removeExtension<T>()) {
+      return this->removeExtension<T>();
+    }
+
+    template <class T>
     auto selectTools() -> decltype(this->selectExtensions<T>()) {
       return this->selectExtensions<T>();
     }
@@ -73,6 +72,14 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     auto selectToolsOfBaseType() -> decltype(this->selectExtensionsOfBaseType<T>()) {
       return this->selectExtensionsOfBaseType<T>();
     }
+    
+    ToolHandleArray<IEmTauSelectionTool> GetL1TauTools() { 
+      return m_l1tau_tools; 
+    }
+    ToolHandleArray<IEnergySumSelectionTool> GetL1XeTools() { return m_l1xe_tools; }
+    ToolHandleArray<IJetRoISelectionTool> GetL1JetTools() { return m_l1jet_tools; }
+    ToolHandleArray<IMuonRoISelectionTool> GetL1MuonTools() { return m_l1muon_tools; }
+    ToolHandleArray<IHltTauSelectionTool> GetHltTauTools() { return m_hlttau_tools; }
 
   private:
 

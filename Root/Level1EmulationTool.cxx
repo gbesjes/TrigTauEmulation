@@ -10,20 +10,20 @@
 namespace TrigTauEmul {
   // Default constructor
   Level1EmulationTool::Level1EmulationTool(const std::string& name): 
-    asg::AsgTool(name),
-    m_l1jet_tools(),
-    m_l1tau_tools(),
-    m_l1xe_tools(),
-    m_l1muon_tools()
+    asg::AsgTool(name)
+    //m_l1jet_tools(),
+    //m_l1tau_tools(),
+    //m_l1xe_tools(),
+    //m_l1muon_tools()
 
   {
 
     declareProperty("l1_chains", m_l1_chains_vec, "Vector of the L1 chains to be evaluated");
 
-    declareProperty("JetTools", m_l1jet_tools);
-    declareProperty("EmTauTools", m_l1tau_tools);
-    declareProperty("XeTools", m_l1xe_tools);
-    declareProperty("MuonTools", m_l1muon_tools);
+    //declareProperty("JetTools", m_l1jet_tools);
+    //declareProperty("EmTauTools", m_l1tau_tools);
+    //declareProperty("XeTools", m_l1xe_tools);
+    //declareProperty("MuonTools", m_l1muon_tools);
 
     // Declaration of all the tool we need
     m_name_parser = new Parser(name + "_ChainParser");
@@ -38,12 +38,12 @@ namespace TrigTauEmul {
 
   void Level1EmulationTool::GetChains() {
     auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
-    std::cout << "CALLING GetChains()" << std::endl;
+    //std::cout << "CALLING GetChains()" << std::endl;
     
-    m_l1jet_tools = registry->GetL1JetTools();
-    m_l1tau_tools = registry->GetL1TauTools();
-    m_l1xe_tools = registry->GetL1XeTools();
-    m_l1muon_tools = registry->GetL1MuonTools();
+    //m_l1jet_tools = registry->GetL1JetTools();
+    //m_l1tau_tools = registry->GetL1TauTools();
+    //m_l1xe_tools = registry->GetL1XeTools();
+    //_l1muon_tools = registry->GetL1MuonTools();
 
     initializeTools();
   }
@@ -65,34 +65,41 @@ namespace TrigTauEmul {
   }
 
   StatusCode Level1EmulationTool::initializeTools() {
+
+    auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
+
     ATH_MSG_INFO("Start tool initialization");
-    for (auto it: m_l1tau_tools) {
+    //for (auto it: m_l1tau_tools) {
+    for (auto it: registry->selectTools<EmTauSelectionTool*>()){
       ATH_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
-      m_counters[it.name()] = 0;
+      m_counters[it->name()] = 0;
     }
 
     // Initialize all the tools we need 
-    for (auto it: m_l1jet_tools) {
+    //for (auto it: m_l1jet_tools) {
+    for (auto it: registry->selectTools<JetRoISelectionTool*>()){
       ATH_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
-      m_counters[it.name()] = 0;
+      m_counters[it->name()] = 0;
     }
 
-    for (auto it: m_l1xe_tools) {
+    //for (auto it: m_l1xe_tools) {
+    for (auto it: registry->selectTools<EnergySumSelectionTool*>()){
       ATH_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
-      m_counters[it.name()] = 0;
+      m_counters[it->name()] = 0;
     }
 
-    for (auto it: m_l1muon_tools) {
+    //for (auto it: m_l1muon_tools) {
+    for (auto it: registry->selectTools<MuonRoISelectionTool*>()){
       ATH_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
-      m_counters[it.name()] = 0;
+      m_counters[it->name()] = 0;
     }
 
     // topological requirement 
@@ -121,22 +128,24 @@ namespace TrigTauEmul {
 
 
   StatusCode Level1EmulationTool::removeUnusedTools(const std::set<std::string>& usedTools){
+    //NOTE: no longer needed with lazy initialization to clean up the separate lists
+    
     //ToolHandleArray<IJetRoISelectionTool> l1jet_tools;
     //ToolHandleArray<IEmTauSelectionTool> l1tau_tools;
     //ToolHandleArray<IEnergySumSelectionTool> l1xe_tools;
     //ToolHandleArray<IMuonRoISelectionTool> l1muon_tools;
     
-    m_l1jet_tools = removeTools(m_l1jet_tools, usedTools);
-    m_l1tau_tools = removeTools(m_l1tau_tools, usedTools);
-    m_l1muon_tools = removeTools(m_l1muon_tools, usedTools);
-    m_l1xe_tools = removeTools(m_l1xe_tools, usedTools);
+    //m_l1jet_tools = removeTools(m_l1jet_tools, usedTools);
+    //m_l1tau_tools = removeTools(m_l1tau_tools, usedTools);
+    //m_l1muon_tools = removeTools(m_l1muon_tools, usedTools);
+    //m_l1xe_tools = removeTools(m_l1xe_tools, usedTools);
 
     //m_l1_chains_vec = removeTools(m_l1_chains_vec, usedTools);
     m_l1_chains_vec.clear();
     for(auto it: usedTools){
       m_l1_chains_vec.push_back("L1_"+it);
     }
-
+    
     return StatusCode::SUCCESS;
   }
 
@@ -150,23 +159,25 @@ namespace TrigTauEmul {
   {
     // Reset the counters to 0;
     reset_counters();
+    auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
 
     for (const auto l1tau : *l1taus) {
-      for (auto it: m_l1tau_tools) {
-        ATH_MSG_DEBUG("testing L1 tau tool on EmTauRoIContainer " << it.name());
-        l1tau->auxdecor<bool>(it.name()) = false;
-        ATH_MSG_DEBUG("Decorating with " << it.name());
+      //for (auto it: m_l1tau_tools) {
+      for (auto it: registry->selectTools<EmTauSelectionTool*>()){
+        ATH_MSG_DEBUG("testing L1 tau tool on EmTauRoIContainer " << it->name());
+        l1tau->auxdecor<bool>(it->name()) = false;
+        ATH_MSG_DEBUG("Decorating with " << it->name());
         if (it->accept(*l1tau)) {
-          ATH_MSG_DEBUG("Accept " << it.name());
+          ATH_MSG_DEBUG("Accept " << it->name());
         //if (not it->accept(*l1tau)) { //hack
-          l1tau->auxdecor<bool>(it.name()) = true;
-          m_counters[it.name()] += 1;
+          l1tau->auxdecor<bool>(it->name()) = true;
+          m_counters[it->name()] += 1;
         
           ATH_MSG_DEBUG("\t passed");
           ATH_MSG_DEBUG("\t => L1 TAU: pt = " << l1tau->tauClus() 
               << ", eta = " << l1tau->eta() 
               << ", phi = " << l1tau->phi()
-              << ", name = "<< it.name());
+              << ", name = "<< it->name());
         } else {
           ATH_MSG_DEBUG("\t rejected");
         }
@@ -174,40 +185,43 @@ namespace TrigTauEmul {
     }
 
     for (const auto l1jet : *l1jets) {
-      for (auto it: m_l1jet_tools) {
-        l1jet->auxdecor<bool>(it.name()) = false;
+      //for (auto it: m_l1jet_tools) {
+      for (auto it: registry->selectTools<JetRoISelectionTool*>()){
+        l1jet->auxdecor<bool>(it->name()) = false;
         if (it->accept(*l1jet)) {
-          l1jet->auxdecor<bool>(it.name()) = true;
-          m_counters[it.name()] += 1;
+          l1jet->auxdecor<bool>(it->name()) = true;
+          m_counters[it->name()] += 1;
           ATH_MSG_DEBUG("L1 JET: pt = " << l1jet->et8x8() 
               << ", eta = " << l1jet->eta() 
               << ", phi = " << l1jet->phi()
-              << ", name = "<< it.name());
+              << ", name = "<< it->name());
         }
       }
     }
 
     for (const auto l1muon : *l1muons) {
-      for (auto it: m_l1muon_tools) {
-        l1muon->auxdecor<bool>(it.name()) = false;
+      //for (auto it: m_l1muon_tools) {
+      for (auto it: registry->selectTools<MuonRoISelectionTool*>()){
+        l1muon->auxdecor<bool>(it->name()) = false;
         if (it->accept(*l1muon)) {
-          l1muon->auxdecor<bool>(it.name()) = true;
-          m_counters[it.name()] += 1;
+          l1muon->auxdecor<bool>(it->name()) = true;
+          m_counters[it->name()] += 1;
           ATH_MSG_DEBUG("L1 MUON: pt = " << l1muon-> thrValue()
               << ", eta = " << l1muon->eta() 
               << ", phi = " << l1muon->phi()
-              << ", name = "<< it.name());
+              << ", name = "<< it->name());
         }
       }
     }
 
-    for (auto it: m_l1xe_tools) {
-      l1xe->auxdecor<bool>(it.name()) = false;
+    //for (auto it: m_l1xe_tools) {
+    for (auto it: registry->selectTools<EnergySumSelectionTool*>()){
+      l1xe->auxdecor<bool>(it->name()) = false;
       if (it->accept(*l1xe)) {
-        l1xe->auxdecor<bool>(it.name()) = true;
-        m_counters[it.name()] += 1;
+        l1xe->auxdecor<bool>(it->name()) = true;
+        m_counters[it->name()] += 1;
         // MP remove
-        ATH_MSG_DEBUG("L1 XE: MET = " << l1xe->energyT() << ", name = " << it.name());
+        ATH_MSG_DEBUG("L1 XE: MET = " << l1xe->energyT() << ", name = " << it->name());
       }
     }
 
@@ -247,17 +261,21 @@ namespace TrigTauEmul {
         std::string tool2 = m_name_parser->get_vec_items("TOPO")[2];
         std::string decor = m_name_parser->return_TOPO_object_string();
 
+        ATH_MSG_DEBUG("Will execute ORL tool for chain " << chain);
+        ATH_MSG_DEBUG("Chain / tool0 / tool1/ tool2");
         ATH_MSG_DEBUG(chain<<": "<<tool0 << "/" << tool1 << "/" << tool2 << "/" << decor);
         if (tool0 == "NULL") {
-          if (tool1.find("TAU") != std::string::npos or tool1.find("EM") != std::string::npos)
-            if (tool2.find("TAU") != std::string::npos or tool2.find("EM") != std::string::npos)
+          if (tool1.find("TAU") != std::string::npos or tool1.find("EM") != std::string::npos) {
+            if (tool2.find("TAU") != std::string::npos or tool2.find("EM") != std::string::npos) {
               ATH_CHECK(m_l1orl_tool->execute(l1taus, l1taus, tool1, tool2));
-            else if (tool2.find("J") != std::string::npos)
+            } else if (tool2.find("J") != std::string::npos) {
               ATH_CHECK(m_l1orl_tool->execute(l1taus, l1jets, tool1, tool2));
-            else
+            } else {
               ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
-          else
+            }
+          } else {
             ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+          }
         } else {
           if (tool0.find("TAU") != std::string::npos or tool0.find("EM") != std::string::npos)
             if (tool1.find("TAU") != std::string::npos or tool1.find("EM") != std::string::npos)

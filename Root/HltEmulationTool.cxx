@@ -10,15 +10,15 @@ namespace TrigTauEmul {
   // Default constructor
   HltEmulationTool::HltEmulationTool(const std::string& name) 
     : asg::AsgTool(name),
-    m_l1_emulation_tool(),
-    m_hlt_tau_tools()
+    m_l1_emulation_tool()
+   // m_hlt_tau_tools()
 
   {
 
     declareProperty("hlt_chains", m_hlt_chains_vec, "Vector of the HLT chains to be evaluated");
     declareProperty("PerformL1Emulation", m_perform_l1_emulation=true);
     declareProperty("Level1EmulationTool", m_l1_emulation_tool);
-    declareProperty("HltTauTools", m_hlt_tau_tools);
+    //declareProperty("HltTauTools", m_hlt_tau_tools);
 
     declareProperty("HLTTriggerCondition", m_HLTTriggerCondition=TrigDefs::Physics);
     declareProperty("L1TriggerCondition", m_L1TriggerCondition=TrigDefs::Physics);
@@ -57,7 +57,7 @@ namespace TrigTauEmul {
           ATH_MSG_INFO("Grabbing chain " << ch);
           m_chains[ch] = chainRegistry->getChain(ch);
         } catch (...) {
-          ATH_MSG_INFO("Skipping unknown HLT chain " << ch);
+          ATH_MSG_WARNING("Skipping unknown HLT chain " << ch);
           continue;
         }
       }
@@ -72,7 +72,7 @@ namespace TrigTauEmul {
 
     m_l1_emulation_tool->GetChains();
     auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
-    m_hlt_tau_tools = registry->GetHltTauTools();
+    //m_hlt_tau_tools = registry->GetHltTauTools();
 
     // Build the list of l1 tools 
     std::set<std::string> l1_items;
@@ -123,24 +123,41 @@ namespace TrigTauEmul {
     
     //clean up obsolete L1 tools
     ATH_MSG_INFO("removing unused L1 tools");
+    ATH_MSG_DEBUG("the following tools are in used:");
+    for(auto s: l1_seeds){
+      ATH_MSG_DEBUG("\t" << s);
+    }
     ATH_CHECK(m_l1_emulation_tool->removeUnusedTools(l1_seeds));
 
     ATH_CHECK(m_trigdec_tool->retrieve());
 
-    // erasing from a ToolHandleArray creates an odd segfault, so write a new one
-    ToolHandleArray<IHltTauSelectionTool> used_hlt_tau_tools;
-    for(auto it: m_hlt_tau_tools) {
+    auto tools = registry->selectTools<HltTauSelectionTool*>();
+    for(auto it = tools.begin(); it != tools.end(); ) {
       if(m_chains.find("HLT_"+it->name()) == m_chains.end()){
         ATH_MSG_INFO("not using tool " << it->name());
+        it.erase();
       } else {
         ATH_MSG_INFO("will use tool " << it->name());
-        used_hlt_tau_tools.push_back(it);
+        ++it;
       }
+
     }
 
-    m_hlt_tau_tools = used_hlt_tau_tools;
+    //// erasing from a ToolHandleArray creates an odd segfault, so write a new one
+    //ToolHandleArray<IHltTauSelectionTool> used_hlt_tau_tools;
+    //for(auto it: m_hlt_tau_tools) {
+      //if(m_chains.find("HLT_"+it->name()) == m_chains.end()){
+        //ATH_MSG_INFO("not using tool " << it->name());
+      //} else {
+        //ATH_MSG_INFO("will use tool " << it->name());
+        //used_hlt_tau_tools.push_back(it);
+      //}
+    //}
 
-    for (auto it: m_hlt_tau_tools) {
+    //m_hlt_tau_tools = used_hlt_tau_tools;
+   
+    //for (auto it: m_hlt_tau_tools) {
+    for (auto it: registry->selectTools<HltTauSelectionTool*>()){
       ATH_MSG_INFO("Initializing " << it->name());
       ATH_CHECK(it->initialize());
       // it->msg().setLevel(this->msg().level());
@@ -171,15 +188,18 @@ namespace TrigTauEmul {
     reset_tau_decision();
     clearL1Decision();
     
+    auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
+    
     for (const auto hlt_tau : hlt_taus) {
-      for (auto it: m_hlt_tau_tools) {
-        hlt_tau.getHltTau()->auxdecor<bool>(it.name()) = false;
+      //for (auto it: m_hlt_tau_tools) {
+      for (auto it: registry->selectTools<HltTauSelectionTool*>()){
+        hlt_tau.getHltTau()->auxdecor<bool>(it->name()) = false;
 
         if (it->accept(hlt_tau)) {
-          ATH_MSG_DEBUG("ACCEPT FOR " << it.name());
-          hlt_tau.getHltTau()->auxdecor<bool>(it.name()) = true;
+          ATH_MSG_DEBUG("ACCEPT FOR " << it->name());
+          hlt_tau.getHltTau()->auxdecor<bool>(it->name()) = true;
         } else {
-          ATH_MSG_DEBUG("REJECT FOR " << it.name());
+          ATH_MSG_DEBUG("REJECT FOR " << it->name());
         }
       }
     }

@@ -142,9 +142,19 @@ class ExtensionContainer {
     auto selectExtensions() const -> decltype(extensions.select(std::declval<Match<T>&&>())) {
         return extensions.template select(Match<T>());
     }
+    
+    template <class T>
+    auto selectExtensions() -> decltype(extensions.select(std::declval<Match<T>&&>())) {
+        return extensions.template select(Match<T>());
+    }
 
     template <class T>
     auto selectExtensionsOfBaseType() const -> decltype(extensions.select(std::declval<MatchDynamic<T>&&>())) {
+        return extensions.template select(MatchDynamic<T>());
+    }
+    
+    template <class T>
+    auto selectExtensionsOfBaseType() -> decltype(extensions.select(std::declval<MatchDynamic<T>&&>())) {
         return extensions.template select(MatchDynamic<T>());
     }
 

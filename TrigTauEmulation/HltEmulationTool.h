@@ -82,7 +82,7 @@ namespace TrigTauEmul {
           const xAOD::EmTauRoIContainer* l1taus);
 
       ToolHandle<TrigTauEmul::ILevel1EmulationTool> m_l1_emulation_tool;
-      ToolHandleArray<IHltTauSelectionTool> m_hlt_tau_tools;
+      //ToolHandleArray<IHltTauSelectionTool> m_hlt_tau_tools;
       ToolHandle<Trig::TrigDecisionTool> *m_trigdec_tool;
   };
 

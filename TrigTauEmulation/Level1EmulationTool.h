@@ -83,10 +83,10 @@ namespace TrigTauEmul {
     Parser* m_name_parser;
   
     // Declaration of the L1 tools handles (jets, taus/ele, met, muons)
-    ToolHandleArray<IJetRoISelectionTool> m_l1jet_tools;
-    ToolHandleArray<IEmTauSelectionTool> m_l1tau_tools;
-    ToolHandleArray<IEnergySumSelectionTool> m_l1xe_tools;
-    ToolHandleArray<IMuonRoISelectionTool> m_l1muon_tools;
+    //ToolHandleArray<IJetRoISelectionTool> m_l1jet_tools;
+    //ToolHandleArray<IEmTauSelectionTool> m_l1tau_tools;
+    //ToolHandleArray<IEnergySumSelectionTool> m_l1xe_tools;
+    //ToolHandleArray<IMuonRoISelectionTool> m_l1muon_tools;
 
     /* ToolHandle<ITrigTauORLTool> m_l1orl_tool; */
     /* ToolHandle<ILevel1TopoSelectionTool> m_l1topo_tool; */
