@@ -73,7 +73,7 @@ class HltItem {
 
       if(toolStoreContains<ILevel1SelectionTool>(seed_name)){
         m_Level1SelectionTool = ToolHandle<ILevel1SelectionTool>(asg::ToolStore::get<ILevel1SelectionTool>(seed_name));
-        std::cout << "grabbed level1 tool " << seed_name << std::endl;
+        std::cout << "grabbed Level1 tool " << seed_name << std::endl;
       } else {
         std::stringstream e;
         e << "No Level1SelectionTool " << seed_name << " found";
