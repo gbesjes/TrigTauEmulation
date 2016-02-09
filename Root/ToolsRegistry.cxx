@@ -4,6 +4,11 @@
 #include <functional>
 
 StatusCode ToolsRegistry::initializeTool(const std::string &name) {
+  if(m_initializedToolNames.find(name) != m_initializedToolNames.end()) {
+    ATH_MSG_DEBUG("Tool " << name << " already initialized");
+    return StatusCode::SUCCESS;
+  }
+
   auto it = m_initializeFunctions.find(name);
   if(it == m_initializeFunctions.end()) {
     std::stringstream e;
@@ -16,6 +21,7 @@ StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   ATH_CHECK(func());
   m_initializedToolNames.insert(name);
 
+  ATH_MSG_DEBUG("Tool " << name << " initialized");
   return StatusCode::SUCCESS;
 }
 

@@ -65,19 +65,23 @@ namespace TrigTauEmul {
 
   StatusCode Level1EmulationTool::initializeTools() {
 
+    ATH_MSG_INFO("Initializing L1 chains");
     auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
-    
+   
     for(const auto &chain: m_l1_chains_vec){
-      std::cout << "Got L1 tool: " << chain << std::endl;
+      ATH_MSG_INFO("Got L1 chain: " << chain);
       ATH_CHECK(m_name_parser->execute(chain));
-
+      
+      unsigned int N = m_name_parser->get_vec_items().size();
+      unsigned int i=0;
+  
+      ATH_MSG_INFO("Will construct " << N << " tools for chain");
       for(const auto &s: m_name_parser->get_vec_items()){
-        std::cout << "\t" << s << std::endl;
+        ATH_MSG_INFO("Chain: " << chain << " => constructing tool " << ++i << "/" << N << " " << s);
+        registry->initializeTool(s);
       }
 
     }
-    throw std::runtime_error("test");
-
 
     ATH_MSG_INFO("Start tool initialization");
     //for (auto it: m_l1tau_tools) {
