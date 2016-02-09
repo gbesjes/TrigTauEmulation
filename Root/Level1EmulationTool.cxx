@@ -36,7 +36,7 @@ namespace TrigTauEmul {
   {}
 
   void Level1EmulationTool::GetChains() {
-    auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
+    //auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
     //std::cout << "CALLING GetChains()" << std::endl;
     
     //m_l1jet_tools = registry->GetL1JetTools();
@@ -73,14 +73,13 @@ namespace TrigTauEmul {
       ATH_CHECK(m_name_parser->execute(chain));
       
       unsigned int N = m_name_parser->get_vec_items().size();
-      unsigned int i=0;
+      unsigned int i = 0;
   
       ATH_MSG_INFO("Will construct " << N << " tools for chain");
       for(const auto &s: m_name_parser->get_vec_items()){
         ATH_MSG_INFO("Chain: " << chain << " => constructing tool " << ++i << "/" << N << " " << s);
         registry->initializeTool(s);
       }
-
     }
 
     ATH_MSG_INFO("Start tool initialization");
@@ -123,6 +122,11 @@ namespace TrigTauEmul {
     // OLR requirement
     ATH_CHECK(m_l1orl_tool->initialize());
     m_l1orl_tool->msg().setLevel(this->msg().level());
+    
+    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<EmTauSelectionTool*>() << " EmTau tools");
+    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<JetRoISelectionTool*>() << " JetRoI tools");
+    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<MuonRoISelectionTool*>() << " MuonRoI tools");
+    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<EnergySumSelectionTool*>() << " EnergySum tools");
 
     return StatusCode::SUCCESS;
   }
@@ -178,26 +182,14 @@ namespace TrigTauEmul {
     reset_counters();
     auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
 
-    this->msg().setLevel(MSG::Level::VERBOSE);
-
-    {
-      // TODO: hack. Need to use proper size of this container somehow.
-      int N = 0;
-      for(auto it : registry->selectTools<EmTauSelectionTool*>()) { ++N; }
-      std::cout << "Will consider " << N << " EMTAU tools" << std::endl;
-    }
-
     for (const auto l1tau : *l1taus) {
       //for (auto it: m_l1tau_tools) {
       for (auto it: registry->selectTools<EmTauSelectionTool*>()){
         ATH_MSG_DEBUG("testing L1 tau tool on EmTauRoIContainer " << it->name());
-        std::cout << "testing L1 tau tool on EmTauRoIContainer " << it->name() << std::endl;;
         l1tau->auxdecor<bool>(it->name()) = false;
         ATH_MSG_DEBUG("Decorating with " << it->name());
-        std::cout << "Decorating with " << it->name() << std::endl;
         if (it->accept(*l1tau)) {
           ATH_MSG_DEBUG("Accept " << it->name());
-          std::cout << "Accept " << it->name() << std::endl;;
         //if (not it->accept(*l1tau)) { //hack
           l1tau->auxdecor<bool>(it->name()) = true;
           m_counters[it->name()] += 1;
@@ -209,16 +201,8 @@ namespace TrigTauEmul {
               << ", name = "<< it->name());
         } else {
           ATH_MSG_DEBUG("\t rejected");
-          std::cout << "\t rejected" << std::endl;
         }
       }
-    }
-    
-    {
-      // TODO: hack. Need to use proper size of this container somehow.
-      int N = 0;
-      for(auto it : registry->selectTools<JetRoISelectionTool*>()) { ++N; }
-      std::cout << "Will consider " << N << " JET tools" << std::endl;
     }
 
     for (const auto l1jet : *l1jets) {
@@ -235,13 +219,6 @@ namespace TrigTauEmul {
         }
       }
     }
-    
-    {
-      // TODO: hack. Need to use proper size of this container somehow.
-      int N = 0;
-      for(auto it : registry->selectTools<MuonRoISelectionTool*>()) { ++N; }
-      std::cout << "Will consider " << N << " MUON tools" << std::endl;
-    }
 
     for (const auto l1muon : *l1muons) {
       //for (auto it: m_l1muon_tools) {
@@ -256,13 +233,6 @@ namespace TrigTauEmul {
               << ", name = "<< it->name());
         }
       }
-    }
-    
-    {
-      // TODO: hack. Need to use proper size of this container somehow.
-      int N = 0;
-      for(auto it : registry->selectTools<EnergySumSelectionTool*>()) { ++N; }
-      std::cout << "Will consider " << N << " XE tools" << std::endl;
     }
 
     //for (auto it: m_l1xe_tools) {

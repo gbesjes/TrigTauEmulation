@@ -59,6 +59,12 @@ class ToolsRegistry : public ExtensionContainer<SelectionTool*>, virtual public 
     }
     
     template <class T>
+    unsigned int getNumberOfTools() {
+      auto c = this->selectExtensions<T>();
+      return std::distance(c.begin(), c.end());
+    }
+
+    template <class T>
     auto removeTool() -> decltype(this->removeExtension<T>()) {
       return this->removeExtension<T>();
     }
