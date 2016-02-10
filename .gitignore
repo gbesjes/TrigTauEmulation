@@ -1,2 +1,7 @@
 run_*
 *_OLD
+*.rej
+*.orig
+cmt
+genConf
+x86_64-slc6-gcc*-opt
