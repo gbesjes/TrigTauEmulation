@@ -1,6 +1,7 @@
 // vim: ts=2 sw=2
 //Local Includes
 
+#include "TrigTauEmulation/MsgStream.h"
 #include "TrigTauEmulation/ChainRegistry.h"
 #include "TrigTauEmulation/HltEmulationTool.h"
 #include "TrigDecisionTool/Conditions.h"
@@ -54,19 +55,19 @@ namespace TrigTauEmul {
     if (m_hlt_chains_vec.size() !=0) {
       for (auto ch: m_hlt_chains_vec) { 
         try {
-          ATH_MSG_INFO("Grabbing chain " << ch);
+          MY_MSG_INFO("Grabbing chain " << ch);
           m_chains[ch] = chainRegistry->getChain(ch);
         } catch (...) {
-          ATH_MSG_WARNING("Skipping unknown HLT chain " << ch);
+          MY_MSG_WARNING("Skipping unknown HLT chain " << ch);
           continue;
         }
       }
     } else {
-      ATH_MSG_WARNING("No HLT Chains are passed to the tool");
+      MY_MSG_WARNING("No HLT Chains are passed to the tool");
     }
 
     if(m_chains.size() == 0){
-      ATH_MSG_FATAL("No initialised HLT chains found!");
+      MY_MSG_FATAL("No initialised HLT chains found!");
       return StatusCode::FAILURE;
     }
 
@@ -78,17 +79,17 @@ namespace TrigTauEmul {
     std::set<std::string> l1_items;
     std::set<std::string> l1_seeds;
     for (auto &chain : m_chains)  {
-      ATH_MSG_INFO("Consider " << chain.first << " with " << chain.second.n_tau_items() << " taus.");
+      MY_MSG_INFO("Consider " << chain.first << " with " << chain.second.n_tau_items() << " taus.");
 
       // 1) consider the l1 accept
-      ATH_MSG_INFO("L1 accept = " << chain.second.l1_accept());
+      MY_MSG_INFO("L1 accept = " << chain.second.l1_accept());
       l1_items.insert("L1_" + chain.second.l1_accept());
       m_L1_tau_decision[chain.second.l1_accept()] = false;
       m_L1_tau_decision_calculated[chain.second.l1_accept()] = false;
 
       // 2) loop over the items and consider the seed
       for (auto &item : chain.second.items()) {
-        ATH_MSG_INFO("HLT item " << item.name());
+        MY_MSG_INFO("HLT item " << item.name());
         l1_items.insert("L1_" + item.seed());
         l1_seeds.insert(item.seed());
         m_L1_tau_decision[item.seed()] = false;
@@ -100,18 +101,18 @@ namespace TrigTauEmul {
 
     auto l1tool_chains = m_l1_emulation_tool->GetL1Chains();
     for (auto &ch: l1_items) {
-      ATH_MSG_INFO("Attempting to load L1 chain " << ch);
+      MY_MSG_INFO("Attempting to load L1 chain " << ch);
       bool found = std::find(l1tool_chains.begin(), l1tool_chains.end(), ch) != l1tool_chains.end();
       if (not found) {
-        ATH_MSG_ERROR("The chain "<< ch 
+        MY_MSG_ERROR("The chain "<< ch 
             <<" has not been passed to the Level1EmulationTool "<< m_l1_emulation_tool->name());
         return StatusCode::FAILURE;
       }
     }
 
-    ATH_MSG_INFO("Available L1 seeds:");
+    MY_MSG_INFO("Available L1 seeds:");
     for (auto s: l1_seeds) {
-      ATH_MSG_INFO("\t" << s);
+      MY_MSG_INFO("\t" << s);
     }
 
     // pass these on to the matching tool
@@ -122,10 +123,10 @@ namespace TrigTauEmul {
     ATH_CHECK(m_matching_tool->initialize());
     
     //clean up obsolete L1 tools
-    ATH_MSG_INFO("removing unused L1 tools");
-    ATH_MSG_DEBUG("the following tools are in used:");
+    MY_MSG_INFO("removing unused L1 tools");
+    MY_MSG_DEBUG("the following tools are in used:");
     for(auto s: l1_seeds){
-      ATH_MSG_DEBUG("\t" << s);
+      MY_MSG_DEBUG("\t" << s);
     }
     ATH_CHECK(m_l1_emulation_tool->removeUnusedTools(l1_seeds));
 
@@ -134,10 +135,10 @@ namespace TrigTauEmul {
     auto tools = registry->selectTools<HltTauSelectionTool*>();
     for(auto it = tools.begin(); it != tools.end(); ) {
       if(m_chains.find("HLT_"+it->name()) == m_chains.end()){
-        ATH_MSG_INFO("not using tool " << it->name());
+        MY_MSG_INFO("not using tool " << it->name());
         it.erase();
       } else {
-        ATH_MSG_INFO("will use tool " << it->name());
+        MY_MSG_INFO("will use tool " << it->name());
         ++it;
       }
 
@@ -147,9 +148,9 @@ namespace TrigTauEmul {
     //ToolHandleArray<IHltTauSelectionTool> used_hlt_tau_tools;
     //for(auto it: m_hlt_tau_tools) {
       //if(m_chains.find("HLT_"+it->name()) == m_chains.end()){
-        //ATH_MSG_INFO("not using tool " << it->name());
+        //MY_MSG_INFO("not using tool " << it->name());
       //} else {
-        //ATH_MSG_INFO("will use tool " << it->name());
+        //MY_MSG_INFO("will use tool " << it->name());
         //used_hlt_tau_tools.push_back(it);
       //}
     //}
@@ -158,7 +159,7 @@ namespace TrigTauEmul {
    
     //for (auto it: m_hlt_tau_tools) {
     for (auto it: registry->selectTools<HltTauSelectionTool*>()){
-      ATH_MSG_INFO("Initializing " << it->name());
+      MY_MSG_INFO("Initializing " << it->name());
       ATH_CHECK(it->initialize());
       // it->msg().setLevel(this->msg().level());
     }
@@ -196,10 +197,10 @@ namespace TrigTauEmul {
         hlt_tau.getHltTau()->auxdecor<bool>(it->name()) = false;
 
         if (it->accept(hlt_tau)) {
-          ATH_MSG_DEBUG("ACCEPT FOR " << it->name());
+          MY_MSG_DEBUG("ACCEPT FOR " << it->name());
           hlt_tau.getHltTau()->auxdecor<bool>(it->name()) = true;
         } else {
-          ATH_MSG_DEBUG("REJECT FOR " << it->name());
+          MY_MSG_DEBUG("REJECT FOR " << it->name());
         }
       }
     }
@@ -215,16 +216,16 @@ namespace TrigTauEmul {
     // 1 -- Loop over all the chains
     for (auto &ch: m_chains) {
       m_HLT_tau_decision[ch.first] = false;
-      ATH_MSG_DEBUG("Calculating tau decision for " << ch.first);
+      MY_MSG_DEBUG("Calculating tau decision for " << ch.first);
 
       // Case 1: only 1 HLT tau in the chain
       if (ch.second.n_tau_items() == 1) {
         // 1 -- Iterate over the items
         for (auto &item: ch.second.items()) { 
-          ATH_MSG_DEBUG("\t" << item.name() << " / " << item.seed() << "/ isTau = "<< item.isTau());
+          MY_MSG_DEBUG("\t" << item.name() << " / " << item.seed() << "/ isTau = "<< item.isTau());
           // 2 -- check if this is a tau item
           if (not item.isTau()) {
-            ATH_MSG_DEBUG("\t\t not a tau -> ignoring");
+            MY_MSG_DEBUG("\t\t not a tau -> ignoring");
             continue;
           }
 
@@ -232,61 +233,61 @@ namespace TrigTauEmul {
           for (const auto decoratedTau : hlt_taus) {
             const auto hlt_tau = decoratedTau.getHltTau();
 
-            ATH_MSG_DEBUG("\t\t HLT TAU "<< hlt_tau->index() 
+            MY_MSG_DEBUG("\t\t HLT TAU "<< hlt_tau->index() 
                 << " (Pt/Eta/Phi): "<< hlt_tau->pt() 
                 << ", " << hlt_tau->eta() << ", " << hlt_tau->phi());
 
             if(m_perform_l1_emulation){
               // 3.1 -- only consider hlt taus with a L1 match
-              ATH_MSG_DEBUG("Testing l1 match as we'll perform L1 emulation later");
+              MY_MSG_DEBUG("Testing l1 match as we'll perform L1 emulation later");
               if (hlt_tau->auxdataConst<int>("l1_index_" + item.seed()) == -1 and hlt_tau->auxdataConst<int>("l1_index") == -1) {
-                ATH_MSG_DEBUG("\t\t\t -> not matching L1 item -> ignoring");
+                MY_MSG_DEBUG("\t\t\t -> not matching L1 item -> ignoring");
                 continue;
               }
 
               // use our seed; if this is -1, the generic has to not be -1
               auto seed_str = "l1_index_" + item.seed();
-              ATH_MSG_DEBUG("\t using L1 seed str " << seed_str);
+              MY_MSG_DEBUG("\t using L1 seed str " << seed_str);
               auto l1_index = hlt_tau->auxdataConst<int>(seed_str);
               if (l1_index == -1) { 
                 seed_str = "l1_index";
                 l1_index = hlt_tau->auxdataConst<int>("l1_index");
-                ATH_MSG_DEBUG("\t seed str not found; using L1 seed str " << seed_str);
+                MY_MSG_DEBUG("\t seed str not found; using L1 seed str " << seed_str);
               }
               auto l1_matched_tau = l1taus->at(l1_index);
 
-              ATH_MSG_DEBUG("\t\t index: " << l1_index << " => l1 pt/eta/phi = " 
+              MY_MSG_DEBUG("\t\t index: " << l1_index << " => l1 pt/eta/phi = " 
                   << l1_matched_tau->tauClus() << ", " 
                   << l1_matched_tau->eta() << ", " 
                   << l1_matched_tau->phi());
-              ATH_MSG_DEBUG("\t\t Is seed " << item.seed() << " passed ? :" 
+              MY_MSG_DEBUG("\t\t Is seed " << item.seed() << " passed ? :" 
                   << l1_matched_tau->auxdataConst<bool>(item.seed()));
 
               // 3.2 -- Check if L1 matched item passes the seed
               if (not l1_matched_tau->auxdataConst<bool>(item.seed())) {
-                ATH_MSG_DEBUG("\t\t matched L1 item did not pass trigger -> ignoring");
+                MY_MSG_DEBUG("\t\t matched L1 item did not pass trigger -> ignoring");
                 continue;
               }
-              ATH_MSG_DEBUG("\t\t Is item passed ? :"
+              MY_MSG_DEBUG("\t\t Is item passed ? :"
                   << hlt_tau->auxdataConst<bool>(item.name()));
             } else {
-              ATH_MSG_DEBUG("not looking at L1 decision");
+              MY_MSG_DEBUG("not looking at L1 decision");
             }
 
             // 3.3 -- Check if the HLT item passes
             if (not hlt_tau->auxdataConst<bool>(item.name())) {
-              ATH_MSG_DEBUG("\t\t HLT item did not pass -> ignoring");
+              MY_MSG_DEBUG("\t\t HLT item did not pass -> ignoring");
               continue;
             }
 
             // 3.4 -- declare the decision true and break the loop
-            ATH_MSG_DEBUG("\t\t => PASSED <=");
+            MY_MSG_DEBUG("\t\t => PASSED <=");
             m_HLT_tau_decision[ch.first] = true;
             break;
           } // loop over hlt_taus
         } // loop over the items (ch.second.items())
       } else if (ch.second.n_tau_items() == 2) {
-        ATH_MSG_DEBUG(ch.first << " has 2 hlt taus");
+        MY_MSG_DEBUG(ch.first << " has 2 hlt taus");
         std::vector<HltItem> tau_items;
         for (auto &item: ch.second.items()) { 
           if (item.isTau()) {
@@ -296,7 +297,7 @@ namespace TrigTauEmul {
 
         // protection
         if (tau_items.size() != 2) {
-          ATH_MSG_ERROR("Wrong number of tau items (not taken into account)");
+          MY_MSG_ERROR("Wrong number of tau items (not taken into account)");
           return StatusCode::FAILURE;
         }
 
@@ -343,7 +344,7 @@ namespace TrigTauEmul {
         }
 
       } else {
-        ATH_MSG_ERROR("Wrong number of taus (not taken into account");
+        MY_MSG_ERROR("Wrong number of taus (not taken into account");
         return StatusCode::FAILURE;
       }
 
@@ -354,62 +355,62 @@ namespace TrigTauEmul {
   }
 
   bool HltEmulationTool::decision(const std::string& chain_name) {
-    ATH_MSG_DEBUG("HltEmulationTool::decision(): consider " << chain_name);
+    MY_MSG_DEBUG("HltEmulationTool::decision(): consider " << chain_name);
     HltChain chain = m_chains[chain_name];
 
     if(m_perform_l1_emulation){
-      ATH_MSG_DEBUG("Check the L1 accept: "<< chain.l1_accept());
+      MY_MSG_DEBUG("Check the L1 accept: "<< chain.l1_accept());
     
       bool pass_L1 = false;
       if(not m_L1_tau_decision_calculated[chain.l1_accept()]){
-        ATH_MSG_DEBUG("Calculating and caching L1 decision for L1" << chain.l1_accept());
+        MY_MSG_DEBUG("Calculating and caching L1 decision for L1" << chain.l1_accept());
         m_L1_tau_decision_calculated[chain.l1_accept()] = true;
         m_L1_tau_decision[chain.l1_accept()] = m_l1_emulation_tool->decision("L1_" + chain.l1_accept());
       } else {
-        ATH_MSG_DEBUG("Using cached L1 decision for L1" << chain.l1_accept());
+        MY_MSG_DEBUG("Using cached L1 decision for L1" << chain.l1_accept());
       }
       pass_L1 = m_L1_tau_decision[chain.l1_accept()]; 
 
       //bool pass_L1 = m_l1_emulation_tool->decision("L1_" + chain.l1_accept());
 
       if (not pass_L1) {
-        ATH_MSG_DEBUG(" => Did not pass the emulated L1 accept");
+        MY_MSG_DEBUG(" => Did not pass the emulated L1 accept");
         return false;
       }
 
-      ATH_MSG_DEBUG(" => Passed the emulated L1 accept");
+      MY_MSG_DEBUG(" => Passed the emulated L1 accept");
     } else {
-      ATH_MSG_DEBUG("Not emulating the L1 accept; consider HLT only");
+      MY_MSG_DEBUG("Not emulating the L1 accept; consider HLT only");
     }
 
     // Compute the tau part
     if (chain.n_tau_items() > 0) {
       if (not m_HLT_tau_decision[chain_name]) {
-        ATH_MSG_DEBUG("Not passing HLT tau decision for " + chain_name);
+        MY_MSG_DEBUG("Not passing HLT tau decision for " + chain_name);
         return false;
       }
     }
-    ATH_MSG_DEBUG("Pass the HLT tau decision");
+    MY_MSG_DEBUG("Pass the HLT tau decision");
 
     // non-tau part from the TDT
     for (auto &item: chain.items()) {
       if (not item.isTau()) {
-        ATH_MSG_DEBUG("Evaluate "<< item.seed());
+        MY_MSG_DEBUG("Evaluate "<< item.seed());
         bool pass_l1 = (*m_trigdec_tool)->isPassed("L1_" + item.seed(), m_L1TriggerCondition);
-        ATH_MSG_DEBUG(item.seed() << " has pass = " << pass_l1);
+        MY_MSG_DEBUG(item.seed() << " has pass = " << pass_l1);
         if (not pass_l1) {
           return false;
         }
 
-        ATH_MSG_DEBUG("Evaluate "<< item.name());
+        MY_MSG_DEBUG("Evaluate "<< item.name());
         bool pass = (*m_trigdec_tool)->isPassed("HLT_" + item.name(), m_HLTTriggerCondition);
-        ATH_MSG_DEBUG(item.name() << " has pass = " << pass);
+        MY_MSG_DEBUG(item.name() << " has pass = " << pass);
         if (not pass) { 
           return false;
         }
       }
 
-      ATH_MSG_DEBUG("Pass the non-tau decision");
+      MY_MSG_DEBUG("Pass the non-tau decision");
 
 
     }
@@ -426,7 +427,7 @@ namespace TrigTauEmul {
   }
 
   void HltEmulationTool::clearL1Decision() {
-    ATH_MSG_DEBUG("Clearing L1 decisions");
+    MY_MSG_DEBUG("Clearing L1 decisions");
     for (auto &it: m_L1_tau_decision) {
       it.second = false;
     }

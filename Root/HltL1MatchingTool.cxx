@@ -1,6 +1,7 @@
 // vim: ts=2 sw=2
 #include "TrigTauEmulation/HltL1MatchingTool.h"
 #include "TrigTauEmulation/Utils.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 HltL1MatchingTool::HltL1MatchingTool(const std::string & name) : asg::AsgTool(name)  {
   std::vector<std::string> l1seeds;
@@ -40,13 +41,13 @@ StatusCode HltL1MatchingTool::match(const xAOD::TauJet *hlt_tau, const xAOD::EmT
 
   //std::set<std::string> seeds(m_l1seeds);
   
-  ATH_MSG_DEBUG("Using seeds: ");
+  MY_MSG_DEBUG("Using seeds: ");
   for (auto s: m_l1seeds) { 
       if(s == "") { 
-        ATH_MSG_DEBUG("\t<empty string>"); 
+        MY_MSG_DEBUG("\t<empty string>"); 
         hlt_tau->auxdecor<int>("l1_index") = -1;
       } else { 
-        ATH_MSG_DEBUG("\t" << s); 
+        MY_MSG_DEBUG("\t" << s); 
         hlt_tau->auxdecor<int>("l1_index_" + s) = -1;
       }
   }
@@ -60,20 +61,20 @@ StatusCode HltL1MatchingTool::match(const xAOD::TauJet *hlt_tau, const xAOD::EmT
     for (const auto l1_tau: *l1_taus) {
       // is it a tau? 
       if (l1_tau->roiType() != xAOD::EmTauRoI::TauRoIWord) {
-        ATH_MSG_DEBUG("seed " << seed_name << ": skipping l1_index " << l1_tau->index() << " due to non-matching roiType");
+        MY_MSG_DEBUG("seed " << seed_name << ": skipping l1_index " << l1_tau->index() << " due to non-matching roiType");
         continue;
       }
       
       // if we use the seed - did the L1 pass?
       if (s != "") { 
-        ATH_MSG_DEBUG("seed " << seed_name << ": l1_index " << l1_tau->index() << " L1 passed = " << l1_tau->auxdataConst<bool>(s)); 
+        MY_MSG_DEBUG("seed " << seed_name << ": l1_index " << l1_tau->index() << " L1 passed = " << l1_tau->auxdataConst<bool>(s)); 
       }
       
       // find the closest in dR
       double dR = Utils::DeltaR(hlt_tau->eta(), hlt_tau->phi(), l1_tau->eta(), l1_tau->phi());
       if (dR < m_dr_cut && dR < dR_init and (s == "" or l1_tau->auxdataConst<bool>(s)) ) {
         dR_init = dR;
-        ATH_MSG_DEBUG("seed " << seed_name << ": matched: dR = "<< dR << " for l1_index " << l1_tau->index() << " at " << idx_name);
+        MY_MSG_DEBUG("seed " << seed_name << ": matched: dR = "<< dR << " for l1_index " << l1_tau->index() << " at " << idx_name);
         hlt_tau->auxdecor<int>(idx_name) = l1_tau->index();
         // break;
       }

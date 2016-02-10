@@ -6,6 +6,8 @@
 #include "AsgTools/ToolStore.h"
 #include "TrigTauEmulation/Level1EmulationTool.h"
 #include "TrigTauEmulation/ToolsRegistry.h"
+#include "TrigTauEmulation/MsgStream.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 namespace TrigTauEmul {
   // Default constructor
@@ -65,27 +67,27 @@ namespace TrigTauEmul {
 
   StatusCode Level1EmulationTool::initializeTools() {
 
-    ATH_MSG_INFO("Initializing L1 chains");
+    MY_MSG_INFO("Initializing L1 chains");
     auto registry = asg::ToolStore::get<ToolsRegistry>("ToolsRegistry");
    
     for(const auto &chain: m_l1_chains_vec){
-      ATH_MSG_INFO("Got L1 chain: " << chain);
+      MY_MSG_INFO("Got L1 chain: " << chain);
       ATH_CHECK(m_name_parser->execute(chain));
       
       unsigned int N = m_name_parser->get_vec_items().size();
       unsigned int i = 0;
   
-      ATH_MSG_INFO("Will construct " << N << " tools for chain");
+      MY_MSG_INFO("Will construct " << N << " tools for chain");
       for(const auto &s: m_name_parser->get_vec_items()){
-        ATH_MSG_INFO("Chain: " << chain << " => constructing tool " << ++i << "/" << N << " " << s);
+        MY_MSG_INFO("Chain: " << chain << " => constructing tool " << ++i << "/" << N << " " << s);
         registry->initializeTool(s);
       }
     }
 
-    ATH_MSG_INFO("Start tool initialization");
+    MY_MSG_INFO("Start tool initialization");
     //for (auto it: m_l1tau_tools) {
     for (auto it: registry->selectTools<EmTauSelectionTool*>()){
-      ATH_MSG_INFO("Initializating "<< it->name());
+      MY_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
       m_counters[it->name()] = 0;
@@ -94,7 +96,7 @@ namespace TrigTauEmul {
     // Initialize all the tools we need 
     //for (auto it: m_l1jet_tools) {
     for (auto it: registry->selectTools<JetRoISelectionTool*>()){
-      ATH_MSG_INFO("Initializating "<< it->name());
+      MY_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
       m_counters[it->name()] = 0;
@@ -102,7 +104,7 @@ namespace TrigTauEmul {
 
     //for (auto it: m_l1xe_tools) {
     for (auto it: registry->selectTools<EnergySumSelectionTool*>()){
-      ATH_MSG_INFO("Initializating "<< it->name());
+      MY_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
       m_counters[it->name()] = 0;
@@ -110,7 +112,7 @@ namespace TrigTauEmul {
 
     //for (auto it: m_l1muon_tools) {
     for (auto it: registry->selectTools<MuonRoISelectionTool*>()){
-      ATH_MSG_INFO("Initializating "<< it->name());
+      MY_MSG_INFO("Initializating "<< it->name());
       // ATH_CHECK(it.retrieve());
       ATH_CHECK(it->initialize());
       m_counters[it->name()] = 0;
@@ -123,10 +125,10 @@ namespace TrigTauEmul {
     ATH_CHECK(m_l1orl_tool->initialize());
     m_l1orl_tool->msg().setLevel(this->msg().level());
     
-    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<EmTauSelectionTool*>() << " EmTau tools");
-    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<JetRoISelectionTool*>() << " JetRoI tools");
-    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<MuonRoISelectionTool*>() << " MuonRoI tools");
-    ATH_MSG_INFO("Will consider " << registry->getNumberOfTools<EnergySumSelectionTool*>() << " EnergySum tools");
+    MY_MSG_INFO("Will consider " << registry->getNumberOfTools<EmTauSelectionTool*>() << " EmTau tools");
+    MY_MSG_INFO("Will consider " << registry->getNumberOfTools<JetRoISelectionTool*>() << " JetRoI tools");
+    MY_MSG_INFO("Will consider " << registry->getNumberOfTools<MuonRoISelectionTool*>() << " MuonRoI tools");
+    MY_MSG_INFO("Will consider " << registry->getNumberOfTools<EnergySumSelectionTool*>() << " EnergySum tools");
 
     return StatusCode::SUCCESS;
   }
@@ -137,9 +139,9 @@ namespace TrigTauEmul {
     // erasing from a ToolHandleArray creates an odd segfault, so write a new one
     for(auto it: tools) {
       if(std::find(usedTools.begin(), usedTools.end(), it->name()) == usedTools.end()){
-        ATH_MSG_INFO("not using tool " << it->name());
+        MY_MSG_INFO("not using tool " << it->name());
       } else {
-        ATH_MSG_INFO("will use tool " << it->name());
+        MY_MSG_INFO("will use tool " << it->name());
         retval.push_back(it);
       }
     }
@@ -185,22 +187,22 @@ namespace TrigTauEmul {
     for (const auto l1tau : *l1taus) {
       //for (auto it: m_l1tau_tools) {
       for (auto it: registry->selectTools<EmTauSelectionTool*>()){
-        ATH_MSG_DEBUG("testing L1 tau tool on EmTauRoIContainer " << it->name());
+        MY_MSG_DEBUG("testing L1 tau tool on EmTauRoIContainer " << it->name());
         l1tau->auxdecor<bool>(it->name()) = false;
-        ATH_MSG_DEBUG("Decorating with " << it->name());
+        MY_MSG_DEBUG("Decorating with " << it->name());
         if (it->accept(*l1tau)) {
-          ATH_MSG_DEBUG("Accept " << it->name());
+          MY_MSG_DEBUG("Accept " << it->name());
         //if (not it->accept(*l1tau)) { //hack
           l1tau->auxdecor<bool>(it->name()) = true;
           m_counters[it->name()] += 1;
         
-          ATH_MSG_DEBUG("\t passed");
-          ATH_MSG_DEBUG("\t => L1 TAU: pt = " << l1tau->tauClus() 
+          MY_MSG_DEBUG("\t passed");
+          MY_MSG_DEBUG("\t => L1 TAU: pt = " << l1tau->tauClus() 
               << ", eta = " << l1tau->eta() 
               << ", phi = " << l1tau->phi()
               << ", name = "<< it->name());
         } else {
-          ATH_MSG_DEBUG("\t rejected");
+          MY_MSG_DEBUG("\t rejected");
         }
       }
     }
@@ -212,7 +214,7 @@ namespace TrigTauEmul {
         if (it->accept(*l1jet)) {
           l1jet->auxdecor<bool>(it->name()) = true;
           m_counters[it->name()] += 1;
-          ATH_MSG_DEBUG("L1 JET: pt = " << l1jet->et8x8() 
+          MY_MSG_DEBUG("L1 JET: pt = " << l1jet->et8x8() 
               << ", eta = " << l1jet->eta() 
               << ", phi = " << l1jet->phi()
               << ", name = "<< it->name());
@@ -227,7 +229,7 @@ namespace TrigTauEmul {
         if (it->accept(*l1muon)) {
           l1muon->auxdecor<bool>(it->name()) = true;
           m_counters[it->name()] += 1;
-          ATH_MSG_DEBUG("L1 MUON: pt = " << l1muon-> thrValue()
+          MY_MSG_DEBUG("L1 MUON: pt = " << l1muon-> thrValue()
               << ", eta = " << l1muon->eta() 
               << ", phi = " << l1muon->phi()
               << ", name = "<< it->name());
@@ -242,7 +244,7 @@ namespace TrigTauEmul {
         l1xe->auxdecor<bool>(it->name()) = true;
         m_counters[it->name()] += 1;
         // MP remove
-        ATH_MSG_DEBUG("L1 XE: MET = " << l1xe->energyT() << ", name = " << it->name());
+        MY_MSG_DEBUG("L1 XE: MET = " << l1xe->energyT() << ", name = " << it->name());
       }
     }
 
@@ -257,7 +259,7 @@ namespace TrigTauEmul {
         std::string tool2 = m_name_parser->get_vec_items("TOPO")[2];
         std::string decor = m_name_parser->return_TOPO_object_string();
 
-        ATH_MSG_DEBUG(chain<<": "<<tool0 << "/" << tool1 << "/" << tool2 << "/" << decor);
+        MY_MSG_DEBUG(chain<<": "<<tool0 << "/" << tool1 << "/" << tool2 << "/" << decor);
         if (tool0.find("TAU") != std::string::npos or tool0.find("EM") != std::string::npos) {
           if (tool1.find("TAU") != std::string::npos or tool1.find("EM") != std::string::npos) {
             if (tool2 == "NULL") 
@@ -265,7 +267,7 @@ namespace TrigTauEmul {
             else
               ATH_CHECK(m_l1topo_tool->execute(l1taus, l1taus, l1jets, decor, tool0, tool1, tool2));
           } else 
-            ATH_MSG_WARNING("tool 1 is not a TAU tool !"); 
+            MY_MSG_WARNING("tool 1 is not a TAU tool !"); 
 
         } else if (tool0.find("MU") != std::string::npos) {
           if (tool1.find("TAU") != std::string::npos) {
@@ -274,7 +276,7 @@ namespace TrigTauEmul {
             else
               ATH_CHECK(m_l1topo_tool->execute(l1muons, l1taus, l1jets, decor, tool0, tool1, tool2));
           } else 
-            ATH_MSG_WARNING("tool 1 is not a TAU tool !"); 
+            MY_MSG_WARNING("tool 1 is not a TAU tool !"); 
         }
       } else if (m_name_parser->check_TOPO_type("OLR")) {
         std::string tool0 = m_name_parser->get_vec_items("TOPO")[0];
@@ -282,9 +284,9 @@ namespace TrigTauEmul {
         std::string tool2 = m_name_parser->get_vec_items("TOPO")[2];
         std::string decor = m_name_parser->return_TOPO_object_string();
 
-        ATH_MSG_DEBUG("Will execute ORL tool for chain " << chain);
-        ATH_MSG_DEBUG("Chain / tool0 / tool1/ tool2");
-        ATH_MSG_DEBUG(chain<<": "<<tool0 << "/" << tool1 << "/" << tool2 << "/" << decor);
+        MY_MSG_DEBUG("Will execute ORL tool for chain " << chain);
+        MY_MSG_DEBUG("Chain / tool0 / tool1/ tool2");
+        MY_MSG_DEBUG(chain<<": "<<tool0 << "/" << tool1 << "/" << tool2 << "/" << decor);
         if (tool0 == "NULL") {
           if (tool1.find("TAU") != std::string::npos or tool1.find("EM") != std::string::npos) {
             if (tool2.find("TAU") != std::string::npos or tool2.find("EM") != std::string::npos) {
@@ -292,10 +294,10 @@ namespace TrigTauEmul {
             } else if (tool2.find("J") != std::string::npos) {
               ATH_CHECK(m_l1orl_tool->execute(l1taus, l1jets, tool1, tool2));
             } else {
-              ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+              MY_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
             }
           } else {
-            ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+            MY_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
           }
         } else {
           if (tool0.find("TAU") != std::string::npos or tool0.find("EM") != std::string::npos)
@@ -303,11 +305,11 @@ namespace TrigTauEmul {
               if (tool2.find("J") != std::string::npos)
                 ATH_CHECK(m_l1orl_tool -> execute(l1taus, l1taus, l1jets, tool0, tool1, tool2));
               else
-                ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+                MY_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
             else
-              ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+              MY_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
           else
-            ATH_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
+            MY_MSG_WARNING(chain <<" can not be parsed as an ORL chain");
         }
 
       }
@@ -317,45 +319,45 @@ namespace TrigTauEmul {
 
 
   bool Level1EmulationTool::decision(const std::string & chain_name) {
-    ATH_MSG_DEBUG("Level1EmulationTool::decision");
+    MY_MSG_DEBUG("Level1EmulationTool::decision");
     bool found = (std::find(m_l1_chains_vec.begin(), m_l1_chains_vec.end(), chain_name) != m_l1_chains_vec.end());
     if (not found) {
-      ATH_MSG_ERROR(chain_name << "is not registered in the vector of chains");
+      MY_MSG_ERROR(chain_name << "is not registered in the vector of chains");
       return false;
     }
 
-    ATH_MSG_DEBUG("executing " << chain_name);
+    MY_MSG_DEBUG("executing " << chain_name);
     ATH_CHECK(m_name_parser->execute(chain_name));
     for (auto it: m_name_parser->get_items()) {
-      ATH_MSG_DEBUG(it.first << " " << m_counters[it.first] << " " << it.second);
+      MY_MSG_DEBUG(it.first << " " << m_counters[it.first] << " " << it.second);
       if (m_counters[it.first] < it.second) {
         return false;
       }
     }   
 
-    ATH_MSG_DEBUG(chain_name 
+    MY_MSG_DEBUG(chain_name 
         << " / is DR type? " 
         << m_name_parser->check_TOPO_type("DR") 
         << " / topo object string = '"
         << m_name_parser->return_TOPO_object_string() << "'");
 
     if (m_name_parser->check_TOPO_type("DR")) {
-      ATH_MSG_DEBUG("returning DR decision");
+      MY_MSG_DEBUG("returning DR decision");
       return m_l1topo_tool->decision(m_name_parser->return_TOPO_object_string());
     }
 
     if (m_name_parser->check_TOPO_type("OLR")){
-      ATH_MSG_DEBUG("returning OLR decision");
+      MY_MSG_DEBUG("returning OLR decision");
       return m_l1orl_tool->decision(m_name_parser->return_TOPO_object_string());
     }
 
-    ATH_MSG_DEBUG("returning default value");
+    MY_MSG_DEBUG("returning default value");
     return true;
   }
 
   StatusCode Level1EmulationTool::PrintCounters() {
-    ATH_MSG_INFO("");
-    ATH_MSG_INFO("-- Counts for the considered tools --");
+    MY_MSG_INFO("");
+    MY_MSG_INFO("-- Counts for the considered tools --");
     std::ostringstream headers;
     std::ostringstream line_tools;
     std::ostringstream line_counts;
@@ -367,9 +369,9 @@ namespace TrigTauEmul {
       line_tools  << std::setw(6) << it.first << " | ";
       line_counts << std::setw(6) << it.second << " | ";
     }
-    ATH_MSG_INFO(headers.str());
-    ATH_MSG_INFO(line_tools.str());
-    ATH_MSG_INFO(line_counts.str());
+    MY_MSG_INFO(headers.str());
+    MY_MSG_INFO(line_tools.str());
+    MY_MSG_INFO(line_counts.str());
     return StatusCode::SUCCESS;
   }
 
@@ -380,26 +382,26 @@ namespace TrigTauEmul {
 					      const xAOD::MuonRoIContainer* l1muons,
 					      const xAOD::EnergySumRoI* l1xe)
   {
-    ATH_MSG_INFO("");
-    ATH_MSG_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    ATH_MSG_INFO("");
-    ATH_MSG_INFO("Container size");
-    ATH_MSG_INFO("+----------+----+");
+    MY_MSG_INFO("");
+    MY_MSG_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    MY_MSG_INFO("");
+    MY_MSG_INFO("Container size");
+    MY_MSG_INFO("+----------+----+");
     std::ostringstream line_taus;
     line_taus << "| l1 taus  | " << std::setw(3) << l1taus->size() << "|";
-    ATH_MSG_INFO(line_taus.str());
+    MY_MSG_INFO(line_taus.str());
     std::ostringstream line_jets;
     line_jets << "| l1 jets  | " << std::setw(3) << l1jets->size() << "|";
-    ATH_MSG_INFO(line_jets.str());
+    MY_MSG_INFO(line_jets.str());
     std::ostringstream line_muons;
     line_muons << "| l1 muons | " << std::setw(3) << l1muons->size() << "|";
-    ATH_MSG_INFO(line_muons.str());
-    ATH_MSG_INFO("+----------+----+");
-    ATH_MSG_INFO("");
+    MY_MSG_INFO(line_muons.str());
+    MY_MSG_INFO("+----------+----+");
+    MY_MSG_INFO("");
     
-    ATH_MSG_INFO("\t L1 EMTAUS");
-    ATH_MSG_INFO("\t +-------+----------+-------------+------------+----------+---------+");
-    ATH_MSG_INFO("\t | Index |  tauClus |     eta     |     phi    |  emIsol  | roiType |");
+    MY_MSG_INFO("\t L1 EMTAUS");
+    MY_MSG_INFO("\t +-------+----------+-------------+------------+----------+---------+");
+    MY_MSG_INFO("\t | Index |  tauClus |     eta     |     phi    |  emIsol  | roiType |");
     for (const auto l1tau: *l1taus) {
       std::ostringstream l1_line;
       l1_line << "\t |" << std::setw(6);
@@ -415,14 +417,14 @@ namespace TrigTauEmul {
       l1_line << " | " << std::setw(7);
       l1_line << (l1tau->roiType()); 
       l1_line << " | ";
-      ATH_MSG_INFO(l1_line.str());
+      MY_MSG_INFO(l1_line.str());
     }
-    ATH_MSG_INFO("\t +-------+----------+-------------+------------+----------+---------+");
-    ATH_MSG_INFO("");
+    MY_MSG_INFO("\t +-------+----------+-------------+------------+----------+---------+");
+    MY_MSG_INFO("");
 
-    ATH_MSG_INFO("\t L1 jets");
-    ATH_MSG_INFO("\t +-------+----------+-------+-----------+");
-    ATH_MSG_INFO("\t | Index |  etLarge |  eta  |    phi    |");
+    MY_MSG_INFO("\t L1 jets");
+    MY_MSG_INFO("\t +-------+----------+-------+-----------+");
+    MY_MSG_INFO("\t | Index |  etLarge |  eta  |    phi    |");
     for (const auto l1jet: *l1jets) {
       std::ostringstream l1_line;
       l1_line << "\t |" << std::setw(6);
@@ -434,14 +436,14 @@ namespace TrigTauEmul {
       l1_line << " | " << std::setw(9);
       l1_line << (l1jet->phi()); 
       l1_line << " | ";
-      ATH_MSG_INFO(l1_line.str());
+      MY_MSG_INFO(l1_line.str());
     }
-    ATH_MSG_INFO("\t +-------+----------+-------+-----------+");
-    ATH_MSG_INFO("");
+    MY_MSG_INFO("\t +-------+----------+-------+-----------+");
+    MY_MSG_INFO("");
     
-    ATH_MSG_INFO("\t L1 muons");
-    ATH_MSG_INFO("\t +-------+-----------+-------+-----------+");
-    ATH_MSG_INFO("\t | Index |  thrValue |  eta  |    phi    |");
+    MY_MSG_INFO("\t L1 muons");
+    MY_MSG_INFO("\t +-------+-----------+-------+-----------+");
+    MY_MSG_INFO("\t | Index |  thrValue |  eta  |    phi    |");
     for (const auto l1muon: *l1muons) {
       std::ostringstream l1_line;
       l1_line << "\t |" << std::setw(6);
@@ -453,14 +455,14 @@ namespace TrigTauEmul {
       l1_line << " | " << std::setw(9);
       l1_line << (l1muon->phi()); 
       l1_line << " | ";
-      ATH_MSG_INFO(l1_line.str());
+      MY_MSG_INFO(l1_line.str());
     }
-    ATH_MSG_INFO("\t +-------+-----------+-------+-----------+");
-    ATH_MSG_INFO("");
+    MY_MSG_INFO("\t +-------+-----------+-------+-----------+");
+    MY_MSG_INFO("");
 
-    ATH_MSG_INFO("\t L1 xe");
-    ATH_MSG_INFO("\t +---------+---------+----------+");
-    ATH_MSG_INFO("\t | energyX | energyY |    MET   |");
+    MY_MSG_INFO("\t L1 xe");
+    MY_MSG_INFO("\t +---------+---------+----------+");
+    MY_MSG_INFO("\t | energyX | energyY |    MET   |");
     std::ostringstream l1xe_line;
     l1xe_line << "\t |" << std::setw(8);
     l1xe_line << (l1xe->energyX()) ;
@@ -469,11 +471,11 @@ namespace TrigTauEmul {
     l1xe_line << " | " << std::setw(8);
     l1xe_line << (TMath::Sqrt(TMath::Power(l1xe->energyX(), 2) + TMath::Power(l1xe->energyY(), 2))); 
     l1xe_line << " | ";
-    ATH_MSG_INFO(l1xe_line.str());
-    ATH_MSG_INFO("\t +---------+---------+----------+");
-    ATH_MSG_INFO("");
-    ATH_MSG_INFO("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    ATH_MSG_INFO("");
+    MY_MSG_INFO(l1xe_line.str());
+    MY_MSG_INFO("\t +---------+---------+----------+");
+    MY_MSG_INFO("");
+    MY_MSG_INFO("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    MY_MSG_INFO("");
 
     return StatusCode::SUCCESS;
   }

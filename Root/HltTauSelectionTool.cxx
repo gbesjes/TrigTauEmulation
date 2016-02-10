@@ -1,6 +1,7 @@
 // vim: ts=2 sw=2
 #include "TrigTauEmulation/HltTauSelectionTool.h"
 #include "TrigTauEmulation/Utils.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 //Default constructor
 HltTauSelectionTool::HltTauSelectionTool(const std::string& name) : SelectionTool(name)
@@ -101,10 +102,10 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet *hlttau, con
 
 // #ifdef ASGTOOL_STANDALONE
 //   if (m_recalculateBDTscore) {
-//     ATH_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
+//     MY_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
 
 //     m_tauIDTool->operator->()->applyDiscriminant(*(const_cast<xAOD::TauJet*>(hlttau)) ).ignore();
-//     ATH_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
+//     MY_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
 //   }
 // #endif
 
@@ -135,10 +136,10 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
 
 // #ifdef ASGTOOL_STANDALONE
 //   if (m_recalculateBDTscore) {
-//     ATH_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
+//     MY_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
 
 //     m_tauIDTool->operator->()->applyDiscriminant(*(const_cast<xAOD::TauJet*>(hlttau)) ).ignore();
-//     ATH_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
+//     MY_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
 //   }
 // #endif
 
@@ -167,14 +168,14 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
 
   // #ifdef ASGTOOL_STANDALONE
   //   if (m_recalculateBDTscore) {
-  //     ATH_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
+  //     MY_MSG_INFO("Recalculating BDT score for HLT tau " << hlttau);
   
   //     m_tauIDTool->operator->()->applyDiscriminant(*(const_cast<xAOD::TauJet*>(hlttau)) ).ignore();
-  //     ATH_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
+  //     MY_MSG_INFO("tau BDT score = " << hlttau->discriminant(xAOD::TauJetParameters::BDTJetScore));
   //   }
   // #endif
 
-  //ATH_MSG_INFO("\t\tBefore calo cuts");
+  //MY_MSG_INFO("\t\tBefore calo cuts");
   if (not m_calopresel->accept(hlttau)) {
     //std::cout << "not accepting calo presel" << std::endl;
     return m_accept;
@@ -189,7 +190,7 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
     }
   }
 
-  // ATH_MSG_INFO("\t\tBefore preselection check");
+  // MY_MSG_INFO("\t\tBefore preselection check");
   if (m_use_fasttracking and presel_tau == NULL) { 
     //std::cout << "no presel_tau present" << std::endl;
     return m_accept;
@@ -201,7 +202,7 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
     }
 
   // --> not needed anymore (central tool now) / will remove soooon
-  // // ATH_MSG_INFO("\t\tBefore FTk cuts");
+  // // MY_MSG_INFO("\t\tBefore FTk cuts");
   // if (not m_ftk->accept(presel_tau)) {
   //   //std::cout << "not accepting tracking cut" << std::endl;
   //   return m_accept;
@@ -209,7 +210,7 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
   //   //std::cout << "accepting tracking cut" << std::endl;
   // }
 
-  // ATH_MSG_INFO("\t\tBefore BDT cuts");
+  // MY_MSG_INFO("\t\tBefore BDT cuts");
   if (not m_tauid->accept(hlttau)) {
     //std::cout << "not accepting tau ID cut" << std::endl;
     return m_accept;
@@ -217,7 +218,7 @@ const Root::TAccept& HltTauSelectionTool::accept(const xAOD::TauJet * hlttau, co
     //std::cout << "accepting tau ID cut" << std::endl;
   }
 
-  // ATH_MSG_INFO("\t\tPass all cuts");
+  // MY_MSG_INFO("\t\tPass all cuts");
   m_accept.setCutResult("HltTau", true);
   return m_accept;
 
