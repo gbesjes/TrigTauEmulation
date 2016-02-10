@@ -1,11 +1,12 @@
 // vim: ts=2 sw=2
 
-#include "TrigTauEmulation/ToolsRegistry.h"
 #include <functional>
+#include "TrigTauEmulation/ToolsRegistry.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   if(m_initializedToolNames.find(name) != m_initializedToolNames.end()) {
-    ATH_MSG_DEBUG("Tool " << name << " already initialized");
+    MY_MSG_DEBUG("Tool " << name << " already initialized");
     return StatusCode::SUCCESS;
   }
 
@@ -21,7 +22,7 @@ StatusCode ToolsRegistry::initializeTool(const std::string &name) {
   ATH_CHECK(func());
   m_initializedToolNames.insert(name);
 
-  ATH_MSG_DEBUG("Tool " << name << " initialized");
+  MY_MSG_DEBUG("Tool " << name << " initialized");
   return StatusCode::SUCCESS;
 }
 

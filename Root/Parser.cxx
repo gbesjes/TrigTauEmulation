@@ -1,5 +1,6 @@
 // vim: ts=2 sw=2
 #include "TrigTauEmulation/Parser.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 // Default constructor
 Parser::Parser(const std::string& name) : asg::AsgTool(name)
@@ -147,7 +148,7 @@ int Parser::get_pass_number(const std::string & item_name)
   if (search != m_nonTOPO_items.end())
     return m_nonTOPO_items[item_name];
   else
-    ATH_MSG_WARNING(item_name << " is not in the map of items"); 
+    MY_MSG_WARNING(item_name << " is not in the map of items"); 
     return -1;
 }
 
@@ -204,7 +205,7 @@ bool Parser::check_TOPO_type(const std::string & TOPO_type)
   else if(TOPO_type == "OLR")
     return m_is_OLR;
   else{
-    ATH_MSG_WARNING("Undefined TOPO requirement" << TOPO_type); 
+    MY_MSG_WARNING("Undefined TOPO requirement" << TOPO_type); 
     return 0;
   }
 }

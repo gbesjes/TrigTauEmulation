@@ -1,6 +1,7 @@
 // vim: ts=2 sw=2
 #include "TrigTauEmulation/TrigTauORLTool.h"
 #include "TrigTauEmulation/Utils.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 const double DELTA_OVERLAP_J = round(100*((0.1)*(0.1)));
 const double DELTA_OVERLAP_EMTAU = round(100*((0.0)*(0.0)));
@@ -29,7 +30,7 @@ StatusCode TrigTauORLTool::execute(const xAOD::EmTauRoIContainer* c1,
 {
   std::string decor = sel1 + "-" + sel2;
   m_orl_decisions[decor] = false;
-  std::cout << "TrigTauORLTool::execute(): considering overlap between " << c1 << " and " << c2 << " using sel1=" << sel1 << " sel2=" << sel2 << std::endl;
+  MY_MSG_DEBUG("TrigTauORLTool::execute(): considering overlap between " << c1 << " and " << c2 << " using sel1=" << sel1 << " sel2=" << sel2);
   for(const auto p1 : *c1){
     p1->auxdecor<bool>(decor) = false;
     // Only consider selected objects
@@ -131,7 +132,7 @@ StatusCode TrigTauORLTool::execute(const xAOD::EmTauRoIContainer* c1,
         if (m_orl_decisions.find(item) != m_orl_decisions.end()) {
           return m_orl_decisions[item];
         } else {
-          ATH_MSG_ERROR(item<<" is not in the list of known ORL requirements");
+          MY_MSG_ERROR(item<<" is not in the list of known ORL requirements");
           return false;
         }
       }   

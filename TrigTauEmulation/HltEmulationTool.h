@@ -21,6 +21,7 @@
 #include "TrigTauEmulation/HltChain.h"
 
 #include "TrigTauEmulation/DecoratedHltTau.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 namespace TrigTauEmul {
   class HltEmulationTool : virtual public IHltEmulationTool, public asg::AsgTool

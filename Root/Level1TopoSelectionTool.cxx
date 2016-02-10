@@ -1,11 +1,11 @@
 #include "TrigTauEmulation/Level1TopoSelectionTool.h"
 #include "TrigTauEmulation/Utils.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 const double DELTA_OVERLAP_J = round(100*((0.1)*(0.1)));
 const double DELTA_OVERLAP_EMTAU = round(100*((0.0)*(0.0)));
-// Default constructor Level1TopoSelectionTool
-Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : Level1SelectionTool(name)
-{
+
+Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : Level1SelectionTool(name) {
   declareProperty("DeltaR", m_delta_r=2.8, "DeltaR matching requirement");
   declareProperty("DeltaPhi", m_delta_phi = 0.1, "DeltaPhi matching requirement");
 
@@ -16,17 +16,13 @@ Level1TopoSelectionTool::Level1TopoSelectionTool(const std::string& name) : Leve
   // m_topo_decisions = new std::map<std::string, bool>();
 }
 
-// Copy constructor
 Level1TopoSelectionTool::Level1TopoSelectionTool(const Level1TopoSelectionTool& other) : Level1SelectionTool(other.name() + "_copy")
 {}
 
-// Tool initialize
-StatusCode Level1TopoSelectionTool::initialize()
-{
+StatusCode Level1TopoSelectionTool::initialize() {
   return StatusCode::SUCCESS;
 }
 
-// Tool execute
 StatusCode Level1TopoSelectionTool::execute(const xAOD::EmTauRoIContainer * c1,
 					    const xAOD::EmTauRoIContainer * c2,
 					    const std::string & decor,
@@ -253,7 +249,7 @@ bool Level1TopoSelectionTool::decision(const std::string & item)
   if (m_topo_decisions.find(item) != m_topo_decisions.end()) {
     return m_topo_decisions[item];
   } else {
-    ATH_MSG_ERROR(item<<" is not in the list of known topological requirements");
+    MY_MSG_ERROR(item<<" is not in the list of known topological requirements");
     return false;
   }
 }   

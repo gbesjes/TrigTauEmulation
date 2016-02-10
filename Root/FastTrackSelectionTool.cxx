@@ -2,6 +2,7 @@
 // #include "TrigTauEmulation/FastTrackSelection.h"
 #include "TrigTauEmulation/FastTrackSelectionTool.h"
 #include "TrigTauEmulation/Utils.h"
+#include "TrigTauEmulation/MsgStream.h"
 
 // Default constructor
 FastTrackSelectionTool::FastTrackSelectionTool(const std::string& name) : asg::AsgTool(name)
@@ -41,7 +42,7 @@ inline const xAOD::TrackParticle* FastTrackSelectionTool::findLeadingTrack(const
     //const double lead_dR = Utils::DeltaR((*tr)->eta(), (*tr)->phi(), hlt_tau->eta(), hlt_tau->phi() );
     if (not (lead_deta < 0.1 and lead_dphi < 0.1)) {
     // if (!(lead_dR < 0.1)) {
-      ATH_MSG_DEBUG("findLeadingTrack(): skipping track with pT=" << (*tr)->pt() 
+      MY_MSG_DEBUG("findLeadingTrack(): skipping track with pT=" << (*tr)->pt() 
 		    << " eta=" << (*tr)->eta() 
 		    << " phi=" << (*tr)->phi() 
 		    << " for dEta*DPhi > 0.1");
@@ -89,10 +90,10 @@ inline const xAOD::TrackParticle* FastTrackSelectionTool::findIsoLeadingTrack(co
 
     const double lead_dR = Utils::DeltaR((*tr)->eta(), (*tr)->phi(), tau->etaDetectorAxis(), tau->phiDetectorAxis());
     if (!(lead_dR < 0.2)) {
-      ATH_MSG_DEBUG("findIsoLeadingTrack(): reference tau with pT=" << (tau)->pt() 
+      MY_MSG_DEBUG("findIsoLeadingTrack(): reference tau with pT=" << (tau)->pt() 
 		    << " eta=" << (tau)->eta() 
 		    << " phi=" << (tau)->phi()); 
-      ATH_MSG_DEBUG("findIsoLeadingTrack(): skipping track with pT=" << (*tr)->pt() 
+      MY_MSG_DEBUG("findIsoLeadingTrack(): skipping track with pT=" << (*tr)->pt() 
 		    << " eta=" << (*tr)->eta() 
 		    << " phi=" << (*tr)->phi() 
 		    << " for dR > 0.2: dR = " << lead_dR);
@@ -122,7 +123,7 @@ bool FastTrackSelectionTool::trackSelection(const xAOD::TauJet *hlt_tau, const x
     lead_trk_phi = leadingTrack->phi();
     lead_trk_eta = leadingTrack->eta();
     usePileupSuppCut = true;
-    ATH_MSG_DEBUG("leading track pT = " << leadingTrack->pt());
+    MY_MSG_DEBUG("leading track pT = " << leadingTrack->pt());
   } else {
     lead_trk_z0 = 0.0;
     lead_trk_eta = hlt_tau->etaDetectorAxis();
@@ -142,20 +143,20 @@ bool FastTrackSelectionTool::trackSelection(const xAOD::TauJet *hlt_tau, const x
     const double dR = Utils::DeltaR_Square(t->eta(), t->phi(), lead_trk_eta, lead_trk_phi);
     
     if (dR < m_core * m_core) {
-      ATH_MSG_DEBUG("TauIso: nCore++: dR = " << dR << " for track " << t << " with pT=" << t->pt() << " eta=" << t->eta()  << " phi=" << t->phi());
+      MY_MSG_DEBUG("TauIso: nCore++: dR = " << dR << " for track " << t << " with pT=" << t->pt() << " eta=" << t->eta()  << " phi=" << t->phi());
       ++nCore;
     } else if (dR < m_iso * m_iso) { 
       ++nIso;
-      ATH_MSG_DEBUG("TauIso: nIso++: dR = " << sqrt(dR) << " for track " << t << " with pT=" << t->pt() << " eta=" << t->eta()  << " phi=" << t->phi());
+      MY_MSG_DEBUG("TauIso: nIso++: dR = " << sqrt(dR) << " for track " << t << " with pT=" << t->pt() << " eta=" << t->eta()  << " phi=" << t->phi());
     }
   }
  
   if (/*nCore > 0 &&*/ nCore < m_ncore_bound && nIso < m_niso_bound) {
-    ATH_MSG_DEBUG("ACCEPT nCore = " << nCore << " nIso = " << nIso); 
+    MY_MSG_DEBUG("ACCEPT nCore = " << nCore << " nIso = " << nIso); 
     return true;
   } 
 
-  ATH_MSG_DEBUG("REJECT nCore = " << nCore << " nIso = " << nIso); 
+  MY_MSG_DEBUG("REJECT nCore = " << nCore << " nIso = " << nIso); 
   return false;
 }
 
@@ -167,29 +168,29 @@ const Root::TAccept& FastTrackSelectionTool::accept(const xAOD::TauJet *hlt_tau,
   m_accept.setCutResult("FastTrackSel", false);
 
 
-  ATH_MSG_DEBUG("Checking tracks for HLT tau with pT=" << hlt_tau->pt() << " eta=" << hlt_tau->eta() << " phi=" << hlt_tau->phi());
+  MY_MSG_DEBUG("Checking tracks for HLT tau with pT=" << hlt_tau->pt() << " eta=" << hlt_tau->eta() << " phi=" << hlt_tau->phi());
   if (preselTracksCore->size() == 0)
     return m_accept;
 
   const xAOD::TrackParticle* coreLeadingTrack = findCoreLeadingTrack(preselTracksCore);
   
-  ATH_MSG_DEBUG("Size of TauCore = " << preselTracksCore->size());
-  ATH_MSG_DEBUG("Size of TauIso = " << preselTracksIso->size());
+  MY_MSG_DEBUG("Size of TauCore = " << preselTracksCore->size());
+  MY_MSG_DEBUG("Size of TauIso = " << preselTracksIso->size());
 
   // const xAOD::TrackParticle* isoLeadingTrack = findLeadingTrack(hlt_tau, preselTracksIso);
   const xAOD::TrackParticle* isoLeadingTrack = findIsoLeadingTrack(hlt_tau, preselTracksIso);
   if(isoLeadingTrack){
-    ATH_MSG_DEBUG("iso leading track pT = " << isoLeadingTrack->pt());
+    MY_MSG_DEBUG("iso leading track pT = " << isoLeadingTrack->pt());
   } else {
-    ATH_MSG_DEBUG("no iso leading track");
+    MY_MSG_DEBUG("no iso leading track");
   }
 
   bool passIsoCut = trackSelection(hlt_tau, isoLeadingTrack, preselTracksIso);
   if(passIsoCut){
     m_accept.setCutResult("FastTrackSel", true);
-    ATH_MSG_DEBUG("passed trackSelection() for core & iso");
+    MY_MSG_DEBUG("passed trackSelection() for core & iso");
   } else {
-    ATH_MSG_DEBUG("did not pass trackSelection() for iso");
+    MY_MSG_DEBUG("did not pass trackSelection() for iso");
   }
 
   return m_accept;
